@@ -13,5 +13,10 @@ public class HomeController {
     public String goHome(){
         return "home";
     }
+    
+    @GetMapping("login")
+    public String goLogin(){
+        return "login";
+    }
 
 }
