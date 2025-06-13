@@ -3,14 +3,7 @@ package br.eventos.zezinEventos.model;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 @NoArgsConstructor
 @AllArgsConstructor
-public class Cliente extends Usuario{
-
-    
-
-    
-
+public class Administrador extends Usuario{
 }

@@ -1,4 +1,4 @@
 package br.eventos.zezinEventos.model;
 
-public class Evento{
+public enum StatusEvento {
 }
