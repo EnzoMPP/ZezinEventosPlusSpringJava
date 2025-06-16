@@ -1,16 +1,13 @@
 package br.eventos.zezinEventos.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDate;
 import java.util.Date;
-
+import java.util.List;
 
 @Entity
 @Table(name = "clientes")
@@ -28,6 +25,7 @@ public class Cliente extends Usuario{
 
     @Column(length = 15)
     private String telefone;
+
 
     
 
