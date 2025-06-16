@@ -9,8 +9,10 @@ function togglePassword() {
         senhaInput.type = 'password';
         toggleIcon.className = 'bi bi-eye';
     }
+}
 
- document.addEventListener('DOMContentLoaded', function() {
+// Evento para alternar campos no formulário
+document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('input[name="tipoUsuario"]').forEach(radio => {
         radio.addEventListener('change', function() {
             if (this.value === 'ORGANIZADOR') {
@@ -27,4 +29,3 @@ function togglePassword() {
         });
     });
 });
-}
