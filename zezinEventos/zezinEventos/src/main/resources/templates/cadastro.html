@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/components :: head}"></head>
+
+<body>
+    <div th:replace="~{fragments/components :: navbar}"></div>
+
+    <section class="bg-primary text-white py-5">
+        <div class="container">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-lg-6 text-center">
+                    <i class="bi bi-person-plus-fill display-1 mb-4 opacity-75"></i>
+                    <h1 class="display-5 fw-bold mb-3">Crie sua conta</h1>
+                    <p class="lead">Junte-se ao SIGEI e comece a desfrutar de todos os recursos da plataforma!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-7">
+                    <div class="card shadow border-0">
+                        <div class="card-body p-4 p-md-5">
+                            <div class="text-center mb-4">
+                                <h3 class="fw-bold text-primary">
+                                    <i class="bi bi-person-plus me-2"></i>
+                                    Cadastre-se
+                                </h3>
+                                <p class="text-muted">Preencha os campos abaixo para criar sua conta</p>
+                            </div>
+
+                            <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                <span th:text="${error}">Erro no cadastro</span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+
+                            <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="bi bi-check-circle me-2"></i>
+                                <span th:text="${success}">Cadastro realizado com sucesso!</span>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+
+                            <form th:action="@{/cadastrar}" method="post">
+                                <div class="mb-4">
+                                    <h5 class="text-primary mb-3">
+                                        <i class="bi bi-person-badge me-2"></i>Tipo de Conta
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="form-check border rounded p-3">
+                                                <input class="form-check-input" type="radio" name="tipoUsuario" id="participante" value="CLIENTE" checked>
+                                                <label class="form-check-label w-100 cursor-pointer" for="participante">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="bi bi-person text-primary fs-4 me-2"></i>
+                                                        <div>
+                                                            <strong>Participante</strong>
+                                                            <div class="small text-muted">Para se inscrever em eventos</div>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check border rounded p-3">
+                                                <input class="form-check-input" type="radio" name="tipoUsuario" id="organizador" value="ORGANIZADOR">
+                                                <label class="form-check-label w-100 cursor-pointer" for="organizador">
+                                                    <div class="d-flex align-items-center">
+                                                        <i class="bi bi-building text-primary fs-4 me-2"></i>
+                                                        <div>
+                                                            <strong>Organizador</strong>
+                                                            <div class="small text-muted">Para criar e gerenciar eventos</div>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Dados pessoais -->
+                                <h5 class="text-primary mb-3">
+                                    <i class="bi bi-card-list me-2"></i>Dados Pessoais
+                                </h5>
+
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-12">
+                                        <label for="nome" class="form-label fw-semibold">Nome completo</label>
+                                        <input type="text" class="form-control" id="nome" name="nome" placeholder="Digite seu nome completo" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="email" class="form-label fw-semibold">Email</label>
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="seu@email.com" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="telefone" class="form-label fw-semibold">Telefone</label>
+                                        <input type="tel" class="form-control" id="telefone" name="telefone" placeholder="(00) 00000-0000">
+                                    </div>
+
+                                    <!-- Campos específicos para participante -->
+                                    <div class="col-md-6" id="campoCPF">
+                                        <label for="cpf" class="form-label fw-semibold">CPF</label>
+                                        <input type="text" class="form-control" id="cpf" name="cpf" placeholder="000.000.000-00">
+                                    </div>
+                                    <div class="col-md-6" id="campoDataNasc">
+                                        <label for="dataNasc" class="form-label fw-semibold">Data de Nascimento</label>
+                                        <input type="date" class="form-control" id="dataNasc" name="dataNasc">
+                                    </div>
+
+                                    <!-- Campos específicos para organizador -->
+                                    <div class="col-md-6 d-none" id="campoCNPJ">
+                                        <label for="cnpj" class="form-label fw-semibold">CNPJ</label>
+                                        <input type="text" class="form-control" id="cnpj" name="cnpj" placeholder="00.000.000/0000-00">
+                                    </div>
+                                    <div class="col-md-6 d-none" id="campoEmpresa">
+                                        <label for="empresa" class="form-label fw-semibold">Nome da Empresa</label>
+                                        <input type="text" class="form-control" id="empresa" name="empresa" placeholder="Nome da sua empresa">
+                                    </div>
+                                </div>
+
+                                <h5 class="text-primary mb-3">
+                                    <i class="bi bi-shield-lock me-2"></i>Dados de Acesso
+                                </h5>
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-12">
+                                        <label for="login" class="form-label fw-semibold">Nome de usuário</label>
+                                        <input type="text" class="form-control" id="login" name="login" placeholder="nome_usuario" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="senha" class="form-label fw-semibold">Senha</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="senha" name="senha" placeholder="Digite sua senha" required>
+                                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('senha', 'toggleIcon1')">
+                                                <i class="bi bi-eye" id="toggleIcon1"></i>
+                                            </button>
+                                        </div>
+                                        <small class="text-muted">Mínimo de 6 caracteres</small>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="confirmSenha" class="form-label fw-semibold">Confirme a senha</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="confirmSenha" name="confirmSenha" placeholder="Confirme sua senha" required>
+                                            <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('confirmSenha', 'toggleIcon2')">
+                                                <i class="bi bi-eye" id="toggleIcon2"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg py-3">
+                                        <i class="bi bi-person-plus me-2"></i>
+                                        Criar Conta
+                                    </button>
+                                </div>
+                            </form>
+
+                            <div class="text-center mt-4">
+                                <p class="mb-0">Já possui uma conta? 
+                                    <a href="/login" class="text-primary fw-bold text-decoration-none">
+                                        Fazer login
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div th:replace="~{fragments/components :: footer}"></div>
+    <div th:replace="~{fragments/components :: scripts}"></div>
+   <script th:src="@{/script.js}"></script>
+</body>
+</html>

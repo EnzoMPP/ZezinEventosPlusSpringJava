@@ -26,7 +26,4 @@ public class Cliente extends Usuario{
     @Column(length = 15)
     private String telefone;
 
-
-    
-
 }
