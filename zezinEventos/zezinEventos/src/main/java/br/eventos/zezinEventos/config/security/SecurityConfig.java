@@ -42,11 +42,10 @@ public class SecurityConfig {
                 .requestMatchers("/cliente/**").hasRole("CLIENTE")
                 .anyRequest().authenticated();
         }).formLogin(form -> {
-    form.loginPage("/login")
-        .defaultSuccessUrl("/admin/home", true) 
-        .failureUrl("/login?error=true")
-        .permitAll();
-                    
+            form.loginPage("/login")
+                .defaultSuccessUrl("/dashboard", true)  // Mudança aqui - volta para dashboard
+                .failureUrl("/login?error=true")
+                .permitAll();
         }).logout(logout -> {
             logout.logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout=true")
