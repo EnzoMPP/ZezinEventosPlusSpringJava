@@ -43,13 +43,15 @@ public class SecurityConfig {
                 .anyRequest().authenticated();
         }).formLogin(form -> {
             form.loginPage("/login")
-                .defaultSuccessUrl("/dashboard", true)  // Mudança aqui - volta para dashboard
+                .defaultSuccessUrl("/dashboard", true)  
                 .failureUrl("/login?error=true")
                 .permitAll();
         }).logout(logout -> {
-            logout.logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout=true")
-                .invalidateHttpSession(true)
+            logout.logoutUrl("/logout") // URL para fazer logout
+                .logoutSuccessUrl("/login?logout=true") // Redireciona após logout
+                .invalidateHttpSession(true)  // Invalida a sessão
+                .deleteCookies("JSESSIONID") // Remove cookies
+                .clearAuthentication(true) // Limpa autenticação
                 .permitAll();
         });
         
