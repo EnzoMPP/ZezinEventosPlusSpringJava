@@ -32,8 +32,7 @@ public class ZezinEventosApplication {
                 admin.setLogin("admin");
                 admin.setSenha(passwordEncoder.encode("admin123"));
                 admin.setAtivo(true);
-                admin.setCargo("Administrador Geral");
-                admin.setTelefone("(11) 99999-9999");
+
                 
                 adminDAO.save(admin);
                 System.out.println("Admin criado - Login: admin | Senha: admin123");
