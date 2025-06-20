@@ -19,9 +19,6 @@ public class HomeController {
         return "login";
     }
 
-     @GetMapping("cadastro")
-    public String goCadastro(){
-        return "cadastro";
-    }
+
 
 }

@@ -20,8 +20,11 @@ public class OrganizadorService {
 
     // Salva ou atualiza um organizador
     public Organizador salvar(Organizador organizador) {
-        return repo.save(organizador);
+    if (organizador.getId() == null) {
+        organizador.setSenha(passwordEncoder.encode(organizador.getSenha()));
     }
+    return repo.save(organizador);
+}
 
     // Lista todos os organizadores
     public List<Organizador> listarTodos() {
