@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
 <head th:replace="~{fragments/components :: head}"></head>
+
 <body>
-    <!-- Usa a navbar específica do organizador -->
     <div th:replace="~{fragments/components :: navbar-organizador}"></div>
 
     <!-- Conteúdo da home do organizador -->
@@ -11,7 +13,8 @@
             <div class="col-12">
                 <div class="alert alert-warning border-0 shadow-sm">
                     <i class="bi bi-building me-2"></i>
-                    <strong>Bem-vindo, <span th:text="${organizador != null ? organizador.nome : 'Organizador'}">Organizador</span>!</strong> 
+                    <strong>Bem-vindo, <span
+                            th:text="${organizador != null ? organizador.nome : 'Organizador'}">Organizador</span>!</strong>
                     Esta é sua área de gestão de eventos no SIGEI.
                 </div>
             </div>
@@ -147,8 +150,12 @@
                     </div>
                     <div class="card-body" th:if="${organizador}">
                         <div class="mb-2">
-                            <strong>Nome:</strong><br>
-                            <span th:text="${organizador.nome}">Nome da Empresa</span>
+                            <strong>Empresa:</strong><br>
+                            <span th:text="${organizador.empresa}">Nome da Empresa</span>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Responsável:</strong><br>
+                            <span th:text="${organizador.nome}">Nome do Responsável</span>
                         </div>
                         <div class="mb-2">
                             <strong>Email:</strong><br>
@@ -157,6 +164,10 @@
                         <div class="mb-2">
                             <strong>CNPJ:</strong><br>
                             <span th:text="${organizador.cnpj ?: 'Não informado'}">Não informado</span>
+                        </div>
+                        <div class="mb-2">
+                            <strong>Telefone:</strong><br>
+                            <span th:text="${organizador.telefone ?: 'Não informado'}">Não informado</span>
                         </div>
                         <div class="mb-3">
                             <strong>Status:</strong><br>
@@ -168,58 +179,61 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Próximos Eventos/Lembretes -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card shadow border-0">
-                    <div class="card-header bg-dark text-white">
-                        <h5 class="mb-0">
-                            <i class="bi bi-bell me-2"></i>Lembretes e Notificações
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="alert alert-info mb-3">
-                            <i class="bi bi-info-circle me-2"></i>
-                            <strong>Dica:</strong> Mantenha seus eventos sempre atualizados para atrair mais participantes!
+            <!-- Próximos Eventos/Lembretes -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card shadow border-0">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-bell me-2"></i>Lembretes e Notificações
+                            </h5>
                         </div>
-                        
-                        <div class="row">
-                            <div class="col-md-4 text-center">
-                                <i class="bi bi-calendar-check text-success display-4 mb-2"></i>
-                                <h6>Eventos Confirmados</h6>
-                                <p class="text-muted small">Eventos aprovados pelo administrador</p>
+                        <div class="card-body">
+                            <div class="alert alert-info mb-3">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <strong>Dica:</strong> Mantenha seus eventos sempre atualizados para atrair mais
+                                participantes!
                             </div>
-                            <div class="col-md-4 text-center">
-                                <i class="bi bi-people text-primary display-4 mb-2"></i>
-                                <h6>Inscrições Ativas</h6>
-                                <p class="text-muted small">Participantes cadastrados em seus eventos</p>
-                            </div>
-                            <div class="col-md-4 text-center">
-                                <i class="bi bi-graph-up text-info display-4 mb-2"></i>
-                                <h6>Relatórios</h6>
-                                <p class="text-muted small">Acompanhe o desempenho dos seus eventos</p>
+
+                            <div class="row">
+                                <div class="col-md-4 text-center">
+                                    <i class="bi bi-calendar-check text-success display-4 mb-2"></i>
+                                    <h6>Eventos Confirmados</h6>
+                                    <p class="text-muted small">Eventos aprovados pelo administrador</p>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <i class="bi bi-people text-primary display-4 mb-2"></i>
+                                    <h6>Inscrições Ativas</h6>
+                                    <p class="text-muted small">Participantes cadastrados em seus eventos</p>
+                                </div>
+                                <div class="col-md-4 text-center">
+                                    <i class="bi bi-graph-up text-info display-4 mb-2"></i>
+                                    <h6>Relatórios</h6>
+                                    <p class="text-muted small">Acompanhe o desempenho dos seus eventos</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div th:replace="~{fragments/components :: scripts}"></div>
-    
-    <style>
-        .card {
-            transition: transform 0.2s;
-        }
-        .card:hover {
-            transform: translateY(-2px);
-        }
-        .btn {
-            transition: all 0.2s;
-        }
-    </style>
+        <div th:replace="~{fragments/components :: scripts}"></div>
+
+        <style>
+            .card {
+                transition: transform 0.2s;
+            }
+
+            .card:hover {
+                transform: translateY(-2px);
+            }
+
+            .btn {
+                transition: all 0.2s;
+            }
+        </style>
 </body>
+
 </html>
