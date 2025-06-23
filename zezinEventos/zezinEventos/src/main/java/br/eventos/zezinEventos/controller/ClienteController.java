@@ -31,28 +31,32 @@ public class ClienteController {
     private EventoService eventoService;
     
     @Autowired
-    private InscricaoService inscricaoService;
-
-    @GetMapping("/home")
+    private InscricaoService inscricaoService;    @GetMapping("/home")
     public String clienteHome(Model model, Authentication authentication) {
         // Busca dados do cliente logado
         Cliente cliente = clienteService.buscarPorLogin(authentication.getName());
         
+        // Busca estatísticas reais das inscrições
+        Long totalInscritos = inscricaoService.contarInscricoesPorCliente(cliente);
+        Long eventosProximos = (long) inscricaoService.listarEventosProximos(cliente).size();
+        Long eventosFinalizados = (long) inscricaoService.listarEventosFinalizados(cliente).size();
+        
         model.addAttribute("pageTitle", "Meus Eventos");
         model.addAttribute("cliente", cliente);
-        model.addAttribute("totalEventosInscritos", 0); // Por enquanto hardcoded
-        model.addAttribute("eventosProximos", 0);
-        model.addAttribute("eventosFinalizados", 0);
+        model.addAttribute("totalEventosInscritos", totalInscritos);
+        model.addAttribute("eventosProximos", eventosProximos);
+        model.addAttribute("eventosFinalizados", eventosFinalizados);
         
         return "cliente/home";
     }
-    
-    @GetMapping("/eventos")
+      @GetMapping("/eventos")
     public String meusEventos(Model model, Authentication authentication) {
         Cliente cliente = clienteService.buscarPorLogin(authentication.getName());
+        List<Inscricao> inscricoes = inscricaoService.listarInscricoesPorCliente(cliente);
         
         model.addAttribute("pageTitle", "Meus Eventos");
         model.addAttribute("cliente", cliente);
+        model.addAttribute("inscricoes", inscricoes);
         
         return "cliente/eventos";
     }
