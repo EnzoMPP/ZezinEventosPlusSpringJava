@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Gerenciar Usuários</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .table th {
+            border-top: none;
+            font-weight: 600;
+            color: #495057;
+            background-color: #f8f9fa;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: bold;
+            color: white;
+        }
+        .btn-action {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        .stats-card {
+            transition: transform 0.2s ease-in-out;
+        }
+        .stats-card:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav th:replace="~{fragments/components :: navbar-admin}"></nav>
+
+    <div class="container-fluid mt-4">
+        <!-- Cabeçalho -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h2 class="mb-0">
+                            <i class="bi bi-people text-danger me-2"></i>
+                            Gerenciar Usuários
+                        </h2>
+                        <p class="text-muted mb-0">Administre todos os usuários do sistema</p>
+                    </div>
+                    <div>
+                        <a href="/admin/home" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>Voltar ao Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alertas -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Cards de Estatísticas -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="card stats-card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="bg-primary bg-opacity-10 rounded-circle p-3">
+                                <i class="bi bi-people fs-4 text-primary"></i>
+                            </div>
+                        </div>
+                        <h4 class="fw-bold text-primary" th:text="${totalUsuarios}">0</h4>
+                        <p class="mb-0 text-muted">Total de Usuários</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="card stats-card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="bg-success bg-opacity-10 rounded-circle p-3">
+                                <i class="bi bi-person-check fs-4 text-success"></i>
+                            </div>
+                        </div>
+                        <h4 class="fw-bold text-success" th:text="${totalClientes}">0</h4>
+                        <p class="mb-0 text-muted">Clientes</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="card stats-card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="bg-warning bg-opacity-10 rounded-circle p-3">
+                                <i class="bi bi-building fs-4 text-warning"></i>
+                            </div>
+                        </div>
+                        <h4 class="fw-bold text-warning" th:text="${totalOrganizadores}">0</h4>
+                        <p class="mb-0 text-muted">Organizadores</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="card stats-card border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="bg-danger bg-opacity-10 rounded-circle p-3">
+                                <i class="bi bi-shield-check fs-4 text-danger"></i>
+                            </div>
+                        </div>
+                        <h4 class="fw-bold text-danger" th:text="${totalAdministradores}">0</h4>
+                        <p class="mb-0 text-muted">Administradores</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros e Busca -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <form method="get" action="/admin/usuarios">
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-8">
+                                    <label for="busca" class="form-label">Buscar Usuários</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="busca" 
+                                           name="busca" 
+                                           th:value="${busca}"
+                                           placeholder="Digite o nome do usuário...">
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary flex-grow-1">
+                                            <i class="bi bi-search me-1"></i>Buscar
+                                        </button>
+                                        <a href="/admin/usuarios" class="btn btn-outline-secondary">
+                                            <i class="bi bi-arrow-clockwise"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Usuários -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="mb-0">
+                            <i class="bi bi-list-ul me-2"></i>
+                            Lista de Usuários
+                            <span class="badge bg-secondary ms-2" th:text="${totalUsuarios}">0</span>
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div th:if="${#lists.isEmpty(usuarios)}" class="text-center py-5 text-muted">
+                            <i class="bi bi-person-x fs-1 mb-3"></i>
+                            <p>Nenhum usuário encontrado</p>
+                            <div th:if="${busca != null and !busca.isEmpty()}">
+                                <a href="/admin/usuarios" class="btn btn-outline-primary">Ver Todos os Usuários</a>
+                            </div>
+                        </div>
+                        
+                        <div th:if="${!#lists.isEmpty(usuarios)}">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Usuário</th>
+                                            <th>Tipo</th>
+                                            <th>Contato</th>
+                                            <th>Documento</th>
+                                            <th>Status</th>
+                                            <th class="text-center">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="usuario : ${usuarios}">
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="user-avatar me-3" th:classappend="${usuario.tipoClasse}">
+                                                        <span th:text="${#strings.substring(usuario.nome, 0, 1).toUpperCase()}">U</span>
+                                                    </div>
+                                                    <div>
+                                                        <div class="fw-bold" th:text="${usuario.nome}">Nome</div>
+                                                        <div class="small text-muted" th:text="${usuario.login}">Login</div>
+                                                        <div th:if="${usuario.empresa != null}" class="small text-muted">
+                                                            <i class="bi bi-building me-1"></i>
+                                                            <span th:text="${usuario.empresa}">Empresa</span>
+                                                        </div>
+                                                        <div th:if="${usuario.cargo != null}" class="small text-muted">
+                                                            <i class="bi bi-briefcase me-1"></i>
+                                                            <span th:text="${usuario.cargo}">Cargo</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge" th:classappend="${usuario.tipoClasse}" th:text="${usuario.tipoTexto}">Tipo</span>
+                                            </td>
+                                            <td>
+                                                <div class="small">
+                                                    <div>
+                                                        <i class="bi bi-envelope me-1"></i>
+                                                        <span th:text="${usuario.email}">Email</span>
+                                                    </div>
+                                                    <div th:if="${usuario.telefone != null}">
+                                                        <i class="bi bi-telephone me-1"></i>
+                                                        <span th:text="${usuario.telefone}">Telefone</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span th:if="${usuario.documento != null}" 
+                                                      class="font-monospace small" 
+                                                      th:text="${usuario.documento}">Documento</span>
+                                                <span th:if="${usuario.documento == null}" class="text-muted">-</span>
+                                            </td>
+                                            <td>
+                                                <span th:if="${usuario.ativo}" class="badge bg-success">Ativo</span>
+                                                <span th:if="${!usuario.ativo}" class="badge bg-secondary">Inativo</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="btn-group" role="group">
+                                                    <!-- Ativar/Desativar -->
+                                                    <div th:if="${usuario.ativo}">
+                                                        <form th:action="@{'/admin/usuarios/desativar/' + ${usuario.tipo} + '/' + ${usuario.id}}" 
+                                                              method="post" 
+                                                              style="display: inline;"
+                                                              onsubmit="return confirm('Tem certeza que deseja desativar este usuário?')">
+                                                            <button type="submit" class="btn btn-warning btn-action" title="Desativar">
+                                                                <i class="bi bi-pause-circle"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                    <div th:if="${!usuario.ativo}">
+                                                        <form th:action="@{'/admin/usuarios/ativar/' + ${usuario.tipo} + '/' + ${usuario.id}}" 
+                                                              method="post" 
+                                                              style="display: inline;">
+                                                            <button type="submit" class="btn btn-success btn-action" title="Ativar">
+                                                                <i class="bi bi-play-circle"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                    
+                                                    <!-- Excluir -->
+                                                    <form th:action="@{'/admin/usuarios/excluir/' + ${usuario.tipo} + '/' + ${usuario.id}}" 
+                                                          method="post" 
+                                                          style="display: inline;"
+                                                          onsubmit="return confirm('ATENÇÃO: Esta ação não pode ser desfeita! Tem certeza que deseja excluir este usuário?')">
+                                                        <button type="submit" class="btn btn-danger btn-action" title="Excluir">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-focus no campo de busca
+        document.getElementById('busca').focus();
+        
+        // Confirmar ações críticas
+        document.querySelectorAll('form[onsubmit*="confirm"]').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const isDelete = this.action.includes('/excluir/');
+                const isDeactivate = this.action.includes('/desativar/');
+                
+                if (isDelete) {
+                    if (!confirm('⚠️ ATENÇÃO: Esta ação é irreversível!\n\nTem certeza que deseja EXCLUIR este usuário?\nTodos os dados relacionados serão perdidos.')) {
+                        e.preventDefault();
+                    }
+                } else if (isDeactivate) {
+                    if (!confirm('Tem certeza que deseja desativar este usuário?\nEle não poderá mais acessar o sistema.')) {
+                        e.preventDefault();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
