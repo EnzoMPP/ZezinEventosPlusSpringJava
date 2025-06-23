@@ -147,10 +147,8 @@
                         <a class="nav-link dropdown-toggle" href="#" id="clienteDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="bi bi-person-circle me-1"></i>
                             <span sec:authentication="name">Cliente</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
+                        </a>                        <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="/cliente/perfil"><i class="bi bi-person me-2"></i>Meu Perfil</a></li>
-                            <li><a class="dropdown-item" href="/cliente/configuracoes"><i class="bi bi-gear me-2"></i>Configurações</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form th:action="@{/logout}" method="post" class="d-inline">

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head th:replace="~{fragments/components :: head}"></head>
+
+<body>
+    <div th:replace="~{fragments/components :: navbar-cliente}"></div>
+
+    <div class="container mt-4">
+        <!-- Cabeçalho -->
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <div class="d-flex align-items-center">
+                        <a href="/cliente/home" class="btn btn-outline-secondary me-3">
+                            <i class="bi bi-arrow-left"></i>
+                        </a>
+                        <h2 class="text-primary mb-0">
+                            <i class="bi bi-clock-history me-2"></i>Histórico de Eventos
+                        </h2>
+                    </div>
+                    <a href="/cliente/eventos-disponiveis" class="btn btn-success">
+                        <i class="bi bi-plus-circle me-2"></i>Buscar Novos Eventos
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensagens de feedback -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Lista de eventos -->
+        <div th:if="${inscricoes != null and !inscricoes.empty}" class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">
+                            <i class="bi bi-list me-2"></i>Todos os Eventos
+                            <span class="badge bg-primary ms-2" th:text="${inscricoes.size()}">0</span>
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Evento</th>
+                                        <th>Data</th>
+                                        <th>Local</th>
+                                        <th>Status</th>
+                                        <th>Inscrição</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="inscricao : ${inscricoes}">
+                                        <td>
+                                            <div>
+                                                <h6 class="mb-1" th:text="${inscricao.evento.nome}">Nome do Evento</h6>
+                                                <small class="text-muted" th:text="${inscricao.evento.descricao}">Descrição</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span th:text="${#temporals.format(inscricao.evento.dataEvento, 'dd/MM/yyyy HH:mm')}">
+                                                Data do evento
+                                            </span>
+                                        </td>
+                                        <td th:text="${inscricao.evento.local}">Local</td>
+                                        <td>
+                                            <span th:if="${inscricao.evento.dataEvento.isAfter(T(java.time.LocalDateTime).now())}" 
+                                                  class="badge bg-success">Próximo</span>
+                                            <span th:unless="${inscricao.evento.dataEvento.isAfter(T(java.time.LocalDateTime).now())}" 
+                                                  class="badge bg-secondary">Finalizado</span>
+                                        </td>
+                                        <td>
+                                            <small class="text-muted">
+                                                <i class="bi bi-calendar-check me-1"></i>
+                                                <span th:text="${#temporals.format(inscricao.dataInscricao, 'dd/MM/yyyy')}">
+                                                    Data da inscrição
+                                                </span>
+                                            </small>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estado vazio -->
+        <div th:if="${inscricoes == null or inscricoes.empty}" class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-calendar-x display-1 text-muted mb-3"></i>
+                        <h4 class="text-muted">Nenhum evento encontrado</h4>
+                        <p class="text-muted mb-4">Você ainda não se inscreveu em nenhum evento.</p>
+                        <a href="/cliente/eventos-disponiveis" class="btn btn-primary">
+                            <i class="bi bi-search me-2"></i>Buscar Eventos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estatísticas -->
+        <div th:if="${inscricoes != null and !inscricoes.empty}" class="row mt-4">
+            <div class="col-md-4">
+                <div class="card bg-primary text-white">
+                    <div class="card-body text-center">
+                        <h3 th:text="${inscricoes.size()}">0</h3>
+                        <p class="mb-0">Total de Eventos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-success text-white">
+                    <div class="card-body text-center">
+                        <h3 th:text="${#lists.size(#lists.select(inscricoes, 'evento.dataEvento.isAfter(T(java.time.LocalDateTime).now())'))}">0</h3>
+                        <p class="mb-0">Eventos Próximos</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-secondary text-white">
+                    <div class="card-body text-center">
+                        <h3 th:text="${#lists.size(#lists.select(inscricoes, '!evento.dataEvento.isAfter(T(java.time.LocalDateTime).now())'))}">0</h3>
+                        <p class="mb-0">Eventos Finalizados</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/components :: scripts}"></div>
+</body>
+
+</html>
