@@ -107,4 +107,9 @@ public class ClienteService {
             throw new RuntimeException("CPF já cadastrado");
         }
     }
+
+    // Conta total de clientes
+    public long contarTodos() {
+        return clienteDAO.count();
+    }
 }

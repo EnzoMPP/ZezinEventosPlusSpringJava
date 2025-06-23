@@ -69,4 +69,9 @@ public class OrganizadorService {
     public boolean existeCnpj(String cnpj) {
         return repo.existsByCnpj(cnpj);
     }
+    
+    // Conta total de organizadores
+    public long contarTodos() {
+        return repo.count();
+    }
 }
