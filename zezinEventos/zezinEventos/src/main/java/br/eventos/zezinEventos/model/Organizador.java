@@ -14,9 +14,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Organizador extends Usuario {
-
-    @Column(unique = true, length = 18)
+public class Organizador extends Usuario {    @Column(unique = true, length = 18)
     private String cnpj;
 
     @Column(length = 15)
@@ -50,9 +48,7 @@ public class Organizador extends Usuario {
 
     public void setEmpresa(String empresa) {
         this.empresa = empresa;
-    }
-
-    public String getTelefone() {
+    }    public String getTelefone() {
         return telefone;
     }
 

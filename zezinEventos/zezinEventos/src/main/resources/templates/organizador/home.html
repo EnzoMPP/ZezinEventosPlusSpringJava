@@ -88,9 +88,29 @@
                         <h5 class="mb-0">
                             <i class="bi bi-calendar-event me-2"></i>Meus Eventos
                         </h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="text-center py-3">
+                    </div>                    <div class="card-body">
+                        <!-- Quando há eventos -->
+                        <div th:if="${totalEventos > 0}" class="py-3">
+                            <div class="text-center mb-3">
+                                <i class="bi bi-calendar-event display-4 text-success mb-3"></i>
+                                <h6>Você tem <span th:text="${totalEventos}">0</span> evento(s) criado(s)</h6>
+                                <p class="text-muted mb-3">
+                                    <span th:text="${eventosAtivos}">0</span> ativo(s) • 
+                                    <span th:text="${eventosFinalizados}">0</span> finalizado(s)
+                                </p>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <a href="/organizador/eventos" class="btn btn-success">
+                                    <i class="bi bi-calendar-event me-2"></i>Gerenciar Eventos
+                                </a>
+                                <a href="/organizador/relatorios" class="btn btn-outline-success">
+                                    <i class="bi bi-graph-up me-2"></i>Ver Relatórios
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Quando não há eventos -->
+                        <div th:if="${totalEventos == 0}" class="text-center py-3">
                             <i class="bi bi-calendar-x display-4 text-muted mb-3"></i>
                             <p class="text-muted">Você ainda não criou nenhum evento</p>
                             <a href="/organizador/eventos" class="btn btn-success">

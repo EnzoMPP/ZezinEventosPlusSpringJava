@@ -202,4 +202,57 @@ public class OrganizadorController {    @Autowired
         
         return "organizador/relatorios";
     }
+    
+    @GetMapping("/empresa")
+    public String empresa(Model model, Authentication authentication) {
+        Organizador organizador = organizadorService.buscarPorLogin(authentication.getName());
+        
+        model.addAttribute("pageTitle", "Informações da Empresa");
+        model.addAttribute("organizador", organizador);
+        
+        return "organizador/empresa";
+    }
+      @PostMapping("/empresa/salvar")
+    public String salvarEmpresa(@ModelAttribute Organizador organizador,
+                               Authentication authentication,
+                               RedirectAttributes redirectAttributes,
+                               Model model) {
+        try {
+            // Busca o organizador atual para manter dados importantes
+            Organizador organizadorAtual = organizadorService.buscarPorLogin(authentication.getName());
+            
+            // Validações de duplicidade (apenas se os dados foram alterados)
+            if (!organizadorAtual.getEmail().equals(organizador.getEmail()) && 
+                organizadorService.existeEmail(organizador.getEmail())) {
+                model.addAttribute("pageTitle", "Informações da Empresa");
+                model.addAttribute("organizador", organizador);
+                model.addAttribute("error", "Este email já está sendo usado por outro organizador.");
+                return "organizador/empresa";
+            }
+            
+            if (!organizadorAtual.getCnpj().equals(organizador.getCnpj()) && 
+                organizadorService.existeCnpj(organizador.getCnpj())) {
+                model.addAttribute("pageTitle", "Informações da Empresa");
+                model.addAttribute("organizador", organizador);
+                model.addAttribute("error", "Este CNPJ já está sendo usado por outro organizador.");
+                return "organizador/empresa";
+            }
+              // Mantém dados que não devem ser alterados
+            organizador.setId(organizadorAtual.getId());
+            organizador.setLogin(organizadorAtual.getLogin());
+            organizador.setSenha(organizadorAtual.getSenha());
+            organizador.setAtivo(organizadorAtual.getAtivo());
+            
+            organizadorService.salvar(organizador);
+            redirectAttributes.addFlashAttribute("success", "Informações da empresa atualizadas com sucesso!");
+            
+        } catch (Exception e) {
+            model.addAttribute("pageTitle", "Informações da Empresa");
+            model.addAttribute("organizador", organizador);
+            model.addAttribute("error", "Erro ao atualizar informações: " + e.getMessage());
+            return "organizador/empresa";
+        }
+        
+        return "redirect:/organizador/empresa";
+    }
 }
