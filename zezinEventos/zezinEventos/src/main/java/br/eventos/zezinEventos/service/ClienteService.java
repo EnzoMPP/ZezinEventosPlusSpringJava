@@ -48,14 +48,10 @@ public class ClienteService {
         return clienteDAO.findByLogin(login);
     }
     
-    // Salva ou atualiza um cliente
+    //Salva ou atualiza um cliente
     @Transactional
     public Cliente salvar(Cliente cliente) {
         validarCliente(cliente);
-        if (cliente.getId() == null) {
-            cliente.setSenha(passwordEncoder.encode(cliente.getSenha()));
-        }
-        
         return clienteDAO.save(cliente);
     }
     
