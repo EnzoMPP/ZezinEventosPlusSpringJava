@@ -22,9 +22,8 @@ public interface EventoDAO extends JpaRepository<Evento, Long> {
     
     // Busca eventos por status
     List<Evento> findByStatus(StatusEvento status);
-    
-    // Busca eventos abertos (para inscrições)
-    @Query("SELECT e FROM Evento e WHERE e.status = 'ABERTO' AND e.ativo = true AND e.vagasOcupadas < e.vagasTotais")
+      // Busca eventos abertos (para inscrições) - com vagas e futuros
+    @Query("SELECT e FROM Evento e WHERE e.status = 'ABERTO' AND e.ativo = true AND e.dataEvento > CURRENT_TIMESTAMP AND e.vagasOcupadas < e.vagasTotais ORDER BY e.dataEvento ASC")
     List<Evento> findEventosAbertos();
     
     // Busca eventos futuros
@@ -33,8 +32,4 @@ public interface EventoDAO extends JpaRepository<Evento, Long> {
     
     // Busca por nome (case insensitive)
     List<Evento> findByNomeContainingIgnoreCase(String nome);
-    
-    // Buscar eventos abertos para inscrição
-    @Query("SELECT e FROM Evento e WHERE e.status = 'ABERTO' AND e.dataEvento > CURRENT_TIMESTAMP ORDER BY e.dataEvento ASC")
-    List<Evento> findEventosAbertos();
 }
