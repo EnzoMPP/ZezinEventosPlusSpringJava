@@ -62,8 +62,7 @@ public class OrganizadorController {
         model.addAttribute("tiposEvento", TipoEvento.values());
         
         return "organizador/criar-evento";
-    }
-      @PostMapping("/eventos/salvar")
+    }    @PostMapping("/eventos/salvar")
     public String salvarEvento(@ModelAttribute Evento evento, 
                               Authentication authentication,
                               RedirectAttributes redirectAttributes,
@@ -73,7 +72,12 @@ public class OrganizadorController {
             evento.setOrganizador(organizador);
             
             eventoService.salvar(evento);
-            redirectAttributes.addFlashAttribute("success", "Evento criado com sucesso!");
+            
+            if (evento.getId() != null) {
+                redirectAttributes.addFlashAttribute("success", "Evento atualizado com sucesso!");
+            } else {
+                redirectAttributes.addFlashAttribute("success", "Evento criado com sucesso!");
+            }
             
         } catch (Exception e) {
             // Em caso de erro, prepara os dados para o formulário
@@ -82,7 +86,15 @@ public class OrganizadorController {
             model.addAttribute("evento", evento);
             model.addAttribute("tiposEvento", TipoEvento.values());
             model.addAttribute("error", e.getMessage());
-            return "organizador/criar-evento";
+            
+            // Retorna o template correto baseado se é criação ou edição
+            if (evento.getId() != null) {
+                model.addAttribute("pageTitle", "Editar Evento");
+                return "organizador/editar-evento";
+            } else {
+                model.addAttribute("pageTitle", "Criar Evento");
+                return "organizador/criar-evento";
+            }
         }
         
         return "redirect:/organizador/eventos";
