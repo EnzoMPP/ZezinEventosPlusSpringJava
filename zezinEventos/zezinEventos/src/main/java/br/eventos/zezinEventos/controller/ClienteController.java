@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,15 +49,14 @@ public class ClienteController {
         model.addAttribute("eventosFinalizados", eventosFinalizados);
         
         return "cliente/home";
-    }
-      @GetMapping("/eventos")
+    }    @GetMapping("/eventos")
     public String meusEventos(Model model, Authentication authentication) {
         Cliente cliente = clienteService.buscarPorLogin(authentication.getName());
-        List<Inscricao> inscricoes = inscricaoService.listarInscricoesPorCliente(cliente);
+        List<Inscricao> inscricoesAtivas = inscricaoService.listarEventosProximos(cliente);
         
-        model.addAttribute("pageTitle", "Meus Eventos");
+        model.addAttribute("pageTitle", "Meus Eventos Ativos");
         model.addAttribute("cliente", cliente);
-        model.addAttribute("inscricoes", inscricoes);
+        model.addAttribute("inscricoes", inscricoesAtivas);
         
         return "cliente/eventos";
     }
@@ -117,5 +117,40 @@ public class ClienteController {
         }
         
         return "redirect:/cliente/eventos";
+    }
+    
+    @GetMapping("/historico")
+    public String historico(Model model, Authentication authentication) {
+        Cliente cliente = clienteService.buscarPorLogin(authentication.getName());
+        List<Inscricao> todasInscricoes = inscricaoService.listarInscricoesPorCliente(cliente);
+        
+        model.addAttribute("pageTitle", "Histórico de Eventos");
+        model.addAttribute("cliente", cliente);
+        model.addAttribute("inscricoes", todasInscricoes);
+        
+        return "cliente/historico";
+    }
+    
+    @PostMapping("/perfil/editar")
+    public String editarPerfil(@ModelAttribute Cliente clienteEditado,
+                              Authentication authentication,
+                              RedirectAttributes redirectAttributes) {
+        try {
+            Cliente clienteAtual = clienteService.buscarPorLogin(authentication.getName());
+            
+            // Atualizar apenas os campos editáveis
+            clienteAtual.setNome(clienteEditado.getNome());
+            clienteAtual.setEmail(clienteEditado.getEmail());
+            clienteAtual.setTelefone(clienteEditado.getTelefone());
+            clienteAtual.setCpf(clienteEditado.getCpf());
+            
+            clienteService.salvar(clienteAtual);
+            redirectAttributes.addFlashAttribute("success", "Perfil atualizado com sucesso!");
+            
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erro ao atualizar perfil: " + e.getMessage());
+        }
+        
+        return "redirect:/cliente/perfil";
     }
 }
