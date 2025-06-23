@@ -74,4 +74,17 @@ public class OrganizadorService {
     public long contarTodos() {
         return repo.count();
     }
+    
+    // Busca organizadores por nome
+    public List<Organizador> buscarPorNome(String nome) {
+        if (nome == null || nome.trim().isEmpty()) {
+            return listarTodos();
+        }
+        return repo.findByNomeContainingIgnoreCase(nome);
+    }
+    
+    // Exclui um organizador
+    public void excluir(Long id) {
+        repo.deleteById(id);
+    }
 }
