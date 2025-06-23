@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head th:replace="~{fragments/components :: head}"></head>
+
+<body>
+    <div th:replace="~{fragments/components :: navbar-organizador}"></div>
+
+    <div class="container mt-4">
+        <!-- Cabeçalho -->
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="text-primary">
+                        <i class="bi bi-calendar-event me-2"></i>Meus Eventos
+                    </h2>
+                    <a href="/organizador/criar-evento" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-2"></i>Criar Novo Evento
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensagens de feedback -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>
+            <span th:text="${success}">Mensagem de sucesso</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <span th:text="${error}">Mensagem de erro</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Lista de eventos -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-list me-2"></i>Lista de Eventos
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Verifica se há eventos -->
+                        <div th:if="${eventos.empty}" class="text-center py-5">
+                            <i class="bi bi-calendar-x display-1 text-muted mb-3"></i>
+                            <h4 class="text-muted">Nenhum evento encontrado</h4>
+                            <p class="text-muted">Você ainda não criou nenhum evento.</p>
+                            <a href="/organizador/criar-evento" class="btn btn-primary">
+                                <i class="bi bi-plus-circle me-2"></i>Criar Primeiro Evento
+                            </a>
+                        </div>
+
+                        <!-- Tabela de eventos -->
+                        <div th:unless="${eventos.empty}" class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Data</th>
+                                        <th>Local</th>
+                                        <th>Tipo</th>
+                                        <th>Vagas</th>
+                                        <th>Status</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="evento : ${eventos}">
+                                        <td>
+                                            <strong th:text="${evento.nome}">Nome do Evento</strong>
+                                        </td>
+                                        <td>
+                                            <span th:text="${#temporals.format(evento.dataEvento, 'dd/MM/yyyy HH:mm')}">01/01/2024 10:00</span>
+                                        </td>
+                                        <td th:text="${evento.local}">Local do Evento</td>
+                                        <td>
+                                            <span class="badge bg-info" th:text="${evento.tipo}">PALESTRA</span>
+                                        </td>
+                                        <td>
+                                            <span th:text="${evento.vagasOcupadas + '/' + evento.vagasTotais}">10/50</span>
+                                            <div class="progress mt-1" style="height: 4px;">
+                                                <div class="progress-bar" role="progressbar" 
+                                                     th:style="'width: ' + ${evento.vagasOcupadas * 100 / evento.vagasTotais} + '%'">
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span th:switch="${evento.status}"
+                                                  class="badge">
+                                                <span th:case="'ABERTO'" class="badge bg-success">ABERTO</span>
+                                                <span th:case="'FECHADO'" class="badge bg-warning">FECHADO</span>
+                                                <span th:case="'FINALIZADO'" class="badge bg-secondary">FINALIZADO</span>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <a th:href="@{/organizador/eventos/editar/{id}(id=${evento.id})}" 
+                                                   class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                                        th:onclick="'confirmarExclusao(' + ${evento.id} + ', \'' + ${evento.nome} + '\')'">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmação de exclusão -->
+    <div class="modal fade" id="modalExclusao" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar Exclusão</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza que deseja excluir o evento:</p>
+                    <strong id="nomeEventoExclusao"></strong>
+                    <p class="text-danger mt-2">Esta ação não pode ser desfeita!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form id="formExclusao" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger">Excluir</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/components :: scripts}"></div>
+    
+    <script>
+        function confirmarExclusao(eventoId, nomeEvento) {
+            document.getElementById('nomeEventoExclusao').textContent = nomeEvento;
+            document.getElementById('formExclusao').action = '/organizador/eventos/excluir/' + eventoId;
+            
+            var modal = new bootstrap.Modal(document.getElementById('modalExclusao'));
+            modal.show();
+        }
+    </script>
+</body>
+
+</html>
