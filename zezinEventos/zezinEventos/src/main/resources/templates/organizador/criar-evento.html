@@ -37,9 +37,11 @@
                         <h5 class="mb-0">
                             <i class="bi bi-form me-2"></i>Informações do Evento
                         </h5>
-                    </div>
-                    <div class="card-body">
+                    </div>                    <div class="card-body">
                         <form th:action="@{/organizador/eventos/salvar}" method="post" th:object="${evento}">
+                            
+                            <!-- Campo hidden para ID -->
+                            <input type="hidden" th:field="*{id}">
                             
                             <!-- Nome do Evento -->
                             <div class="mb-3">

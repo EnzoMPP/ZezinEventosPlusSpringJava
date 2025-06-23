@@ -18,7 +18,9 @@ import java.util.List;
 @Controller
 @RequestMapping("/organizador")
 @PreAuthorize("hasRole('ORGANIZADOR')")
-public class OrganizadorController {    @Autowired
+public class OrganizadorController {
+
+    @Autowired
     private OrganizadorService organizadorService;
     
     @Autowired
@@ -61,11 +63,11 @@ public class OrganizadorController {    @Autowired
         
         return "organizador/criar-evento";
     }
-    
-    @PostMapping("/eventos/salvar")
+      @PostMapping("/eventos/salvar")
     public String salvarEvento(@ModelAttribute Evento evento, 
                               Authentication authentication,
-                              RedirectAttributes redirectAttributes) {
+                              RedirectAttributes redirectAttributes,
+                              Model model) {
         try {
             Organizador organizador = organizadorService.buscarPorLogin(authentication.getName());
             evento.setOrganizador(organizador);
@@ -74,8 +76,13 @@ public class OrganizadorController {    @Autowired
             redirectAttributes.addFlashAttribute("success", "Evento criado com sucesso!");
             
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
-            return "redirect:/organizador/criar-evento";
+            // Em caso de erro, prepara os dados para o formulário
+            Organizador organizador = organizadorService.buscarPorLogin(authentication.getName());
+            model.addAttribute("organizador", organizador);
+            model.addAttribute("evento", evento);
+            model.addAttribute("tiposEvento", TipoEvento.values());
+            model.addAttribute("error", e.getMessage());
+            return "organizador/criar-evento";
         }
         
         return "redirect:/organizador/eventos";

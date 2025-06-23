@@ -7,7 +7,7 @@
 <body>
     <div th:replace="~{fragments/components :: navbar-organizador}"></div>
 
-    <div class="container mt-4">        <!-- Cabeçalho -->
+    <div class="container mt-4">        
         <div class="row">
             <div class="col-12">
                 <h2 class="text-primary mb-4">
@@ -95,9 +95,11 @@
                                                 <a th:href="@{/organizador/eventos/editar/{id}(id=${evento.id})}" 
                                                    class="btn btn-sm btn-outline-primary">
                                                     <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <button type="button" class="btn btn-sm btn-outline-danger"
-                                                        th:onclick="'confirmarExclusao(' + ${evento.id} + ', \'' + ${evento.nome} + '\')'">
+                                                </a>                                                <button type="button" class="btn btn-sm btn-outline-danger btn-excluir"
+                                                        th:data-id="${evento.id}" 
+                                                        th:data-nome="${evento.nome}"
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#modalExclusao">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             </div>
@@ -136,8 +138,7 @@
     </div>
 
     <div th:replace="~{fragments/components :: scripts}"></div>
-    
-    <script>
+      <script>
         function confirmarExclusao(eventoId, nomeEvento) {
             document.getElementById('nomeEventoExclusao').textContent = nomeEvento;
             document.getElementById('formExclusao').action = '/organizador/eventos/excluir/' + eventoId;
@@ -145,6 +146,17 @@
             var modal = new bootstrap.Modal(document.getElementById('modalExclusao'));
             modal.show();
         }
+
+        // Event listener para botões de exclusão
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.btn-excluir').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    const eventoId = this.getAttribute('data-id');
+                    const nomeEvento = this.getAttribute('data-nome');
+                    confirmarExclusao(eventoId, nomeEvento);
+                });
+            });
+        });
     </script>
 </body>
 
