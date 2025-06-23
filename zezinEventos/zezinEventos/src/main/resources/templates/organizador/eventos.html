@@ -7,18 +7,12 @@
 <body>
     <div th:replace="~{fragments/components :: navbar-organizador}"></div>
 
-    <div class="container mt-4">
-        <!-- Cabeçalho -->
+    <div class="container mt-4">        <!-- Cabeçalho -->
         <div class="row">
             <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h2 class="text-primary">
-                        <i class="bi bi-calendar-event me-2"></i>Meus Eventos
-                    </h2>
-                    <a href="/organizador/criar-evento" class="btn btn-primary">
-                        <i class="bi bi-plus-circle me-2"></i>Criar Novo Evento
-                    </a>
-                </div>
+                <h2 class="text-primary mb-4">
+                    <i class="bi bi-calendar-event me-2"></i>Meus Eventos
+                </h2>
             </div>
         </div>
 
@@ -45,13 +39,12 @@
                         </h5>
                     </div>
                     <div class="card-body">
-                        <!-- Verifica se há eventos -->
-                        <div th:if="${eventos.empty}" class="text-center py-5">
+                        <!-- Verifica se há eventos -->                        <div th:if="${eventos.empty}" class="text-center py-5">
                             <i class="bi bi-calendar-x display-1 text-muted mb-3"></i>
                             <h4 class="text-muted">Nenhum evento encontrado</h4>
                             <p class="text-muted">Você ainda não criou nenhum evento.</p>
-                            <a href="/organizador/criar-evento" class="btn btn-primary">
-                                <i class="bi bi-plus-circle me-2"></i>Criar Primeiro Evento
+                            <a href="/organizador/home" class="btn btn-outline-primary">
+                                <i class="bi bi-arrow-left me-2"></i>Voltar ao Dashboard
                             </a>
                         </div>
 

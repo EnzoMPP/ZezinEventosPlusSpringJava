@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head th:replace="~{fragments/components :: head}"></head>
+
+<body>
+    <div th:replace="~{fragments/components :: navbar-organizador}"></div>
+
+    <div class="container mt-4">
+        <!-- Cabeçalho -->
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex align-items-center mb-4">
+                    <a href="/organizador/eventos" class="btn btn-outline-secondary me-3">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
+                    <h2 class="text-primary mb-0">
+                        <i class="bi bi-calendar-plus me-2"></i>Criar Novo Evento
+                    </h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensagens de erro -->
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <span th:text="${error}">Mensagem de erro</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Formulário -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-form me-2"></i>Informações do Evento
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/organizador/eventos/salvar}" method="post" th:object="${evento}">
+                            
+                            <!-- Nome do Evento -->
+                            <div class="mb-3">
+                                <label for="nome" class="form-label fw-bold">
+                                    <i class="bi bi-card-text me-1"></i>Nome do Evento *
+                                </label>
+                                <input type="text" class="form-control" id="nome" th:field="*{nome}" 
+                                       placeholder="Ex: Workshop de Spring Boot" required maxlength="200">
+                            </div>
+
+                            <!-- Descrição -->
+                            <div class="mb-3">
+                                <label for="descricao" class="form-label fw-bold">
+                                    <i class="bi bi-file-text me-1"></i>Descrição
+                                </label>
+                                <textarea class="form-control" id="descricao" th:field="*{descricao}" rows="4"
+                                          placeholder="Descreva o que será abordado no evento..."></textarea>
+                            </div>
+
+                            <!-- Tipo e Preço -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="tipo" class="form-label fw-bold">
+                                        <i class="bi bi-tag me-1"></i>Tipo de Evento *
+                                    </label>
+                                    <select class="form-select" id="tipo" th:field="*{tipo}" required>
+                                        <option value="">Selecione o tipo</option>
+                                        <option th:each="tipoEvento : ${tiposEvento}" 
+                                                th:value="${tipoEvento}" 
+                                                th:text="${tipoEvento}">PALESTRA</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="precoIngresso" class="form-label fw-bold">
+                                        <i class="bi bi-currency-dollar me-1"></i>Preço do Ingresso
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">R$</span>
+                                        <input type="number" class="form-control" id="precoIngresso" 
+                                               th:field="*{precoIngresso}" step="0.01" min="0" 
+                                               placeholder="0,00">
+                                    </div>
+                                    <small class="form-text text-muted">Deixe 0 para eventos gratuitos</small>
+                                </div>
+                            </div>
+
+                            <!-- Data e Local -->
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="dataEvento" class="form-label fw-bold">
+                                        <i class="bi bi-calendar me-1"></i>Data e Horário *
+                                    </label>
+                                    <input type="datetime-local" class="form-control" id="dataEvento" 
+                                           th:field="*{dataEvento}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="local" class="form-label fw-bold">
+                                        <i class="bi bi-geo-alt me-1"></i>Local *
+                                    </label>
+                                    <input type="text" class="form-control" id="local" th:field="*{local}" 
+                                           placeholder="Ex: Auditório Principal, Sala 101" required maxlength="200">
+                                </div>
+                            </div>
+
+                            <!-- Vagas -->
+                            <div class="mb-3">
+                                <label for="vagasTotais" class="form-label fw-bold">
+                                    <i class="bi bi-people me-1"></i>Número de Vagas *
+                                </label>
+                                <input type="number" class="form-control" id="vagasTotais" 
+                                       th:field="*{vagasTotais}" min="1" max="10000" 
+                                       placeholder="Ex: 50" required>
+                                <small class="form-text text-muted">Número máximo de participantes</small>
+                            </div>
+
+                            <!-- Palestrantes -->
+                            <div class="mb-4">
+                                <label for="palestrantes" class="form-label fw-bold">
+                                    <i class="bi bi-person-badge me-1"></i>Palestrantes
+                                </label>
+                                <textarea class="form-control" id="palestrantes" th:field="*{palestrantes}" rows="3"
+                                          placeholder="Ex: Dr. João Silva, Maria Santos (Especialista em Java), Prof. Pedro Costa"></textarea>
+                                <small class="form-text text-muted">Liste os palestrantes separados por vírgula</small>
+                            </div>
+
+                            <!-- Botões -->
+                            <div class="d-flex justify-content-between">
+                                <a href="/organizador/eventos" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle me-2"></i>Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle me-2"></i>Criar Evento
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/components :: scripts}"></div>
+    
+    <script>
+        // Definir data mínima como hoje
+        document.addEventListener('DOMContentLoaded', function() {
+            const agora = new Date();
+            const dataMinima = agora.toISOString().slice(0, 16);
+            document.getElementById('dataEvento').min = dataMinima;
+        });
+    </script>
+</body>
+
+</html>
