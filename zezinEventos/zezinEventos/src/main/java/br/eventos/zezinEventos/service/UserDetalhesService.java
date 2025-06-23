@@ -1,4 +1,4 @@
-package br.eventos.zezinEventos.config.security.service;
+package br.eventos.zezinEventos.service;
 
 import br.eventos.zezinEventos.model.Administrador;
 import br.eventos.zezinEventos.model.Cliente;
