@@ -95,8 +95,7 @@ public class AdminController {    @Autowired
         model.addAttribute("eventosRecentes", eventosRecentes);
         
         return "admin/home";
-    }
-      @GetMapping("/usuarios")
+    }    @GetMapping("/usuarios")
     public String usuarios(Model model, @RequestParam(required = false) String busca) {
         // Buscar todos os tipos de usuários
         List<Cliente> clientes = busca != null && !busca.trim().isEmpty() 
@@ -107,58 +106,65 @@ public class AdminController {    @Autowired
             ? organizadorService.buscarPorNome(busca)
             : organizadorService.listarTodos();
             
-        List<Administrador> administradores = administradorService.listarTodos();
+        List<Administrador> administradores = busca != null && !busca.trim().isEmpty()
+            ? administradorService.buscarPorNome(busca)
+            : administradorService.listarTodos();
         
         // Criar lista combinada para exibição
         List<Map<String, Object>> todosUsuarios = new ArrayList<>();
-        
-        // Adicionar clientes
+          // Adicionar clientes (apenas ativos)
         for (Cliente cliente : clientes) {
-            Map<String, Object> usuario = new HashMap<>();
-            usuario.put("id", cliente.getId());
-            usuario.put("nome", cliente.getNome());
-            usuario.put("email", cliente.getEmail());
-            usuario.put("login", cliente.getLogin());
-            usuario.put("ativo", cliente.getAtivo());
-            usuario.put("tipo", "CLIENTE");
-            usuario.put("tipoTexto", "Cliente");
-            usuario.put("tipoClasse", "bg-success");
-            usuario.put("documento", cliente.getCpf());
-            usuario.put("telefone", cliente.getTelefone());
-            todosUsuarios.add(usuario);
+            if (cliente.getAtivo()) { // Só mostra clientes ativos
+                Map<String, Object> usuario = new HashMap<>();
+                usuario.put("id", cliente.getId());
+                usuario.put("nome", cliente.getNome());
+                usuario.put("email", cliente.getEmail());
+                usuario.put("login", cliente.getLogin());
+                usuario.put("ativo", cliente.getAtivo());
+                usuario.put("tipo", "CLIENTE");
+                usuario.put("tipoTexto", "Cliente");
+                usuario.put("tipoClasse", "bg-success");
+                usuario.put("documento", cliente.getCpf());
+                usuario.put("telefone", cliente.getTelefone());
+                todosUsuarios.add(usuario);
+            }
         }
         
-        // Adicionar organizadores
+        // Adicionar organizadores (apenas ativos)
         for (Organizador organizador : organizadores) {
-            Map<String, Object> usuario = new HashMap<>();
-            usuario.put("id", organizador.getId());
-            usuario.put("nome", organizador.getNome());
-            usuario.put("email", organizador.getEmail());
-            usuario.put("login", organizador.getLogin());
-            usuario.put("ativo", organizador.getAtivo());
-            usuario.put("tipo", "ORGANIZADOR");
-            usuario.put("tipoTexto", "Organizador");
-            usuario.put("tipoClasse", "bg-warning");
-            usuario.put("documento", organizador.getCnpj());
-            usuario.put("telefone", organizador.getTelefone());
-            usuario.put("empresa", organizador.getEmpresa());
-            todosUsuarios.add(usuario);
+            if (organizador.getAtivo()) { // Só mostra organizadores ativos
+                Map<String, Object> usuario = new HashMap<>();
+                usuario.put("id", organizador.getId());
+                usuario.put("nome", organizador.getNome());
+                usuario.put("email", organizador.getEmail());
+                usuario.put("login", organizador.getLogin());
+                usuario.put("ativo", organizador.getAtivo());
+                usuario.put("tipo", "ORGANIZADOR");
+                usuario.put("tipoTexto", "Organizador");
+                usuario.put("tipoClasse", "bg-warning");
+                usuario.put("documento", organizador.getCnpj());
+                usuario.put("telefone", organizador.getTelefone());
+                usuario.put("empresa", organizador.getEmpresa());
+                todosUsuarios.add(usuario);
+            }
         }
         
-        // Adicionar administradores
+        // Adicionar administradores (apenas ativos)
         for (Administrador admin : administradores) {
-            Map<String, Object> usuario = new HashMap<>();
-            usuario.put("id", admin.getId());
-            usuario.put("nome", admin.getNome());
-            usuario.put("email", admin.getEmail());
-            usuario.put("login", admin.getLogin());            usuario.put("ativo", admin.getAtivo());
-            usuario.put("tipo", "ADMIN");
-            usuario.put("tipoTexto", "Administrador");
-            usuario.put("tipoClasse", "bg-danger");
-            usuario.put("documento", null); // Administradores não têm documento
-            usuario.put("telefone", admin.getTelefone());
-            usuario.put("cargo", admin.getCargo());
-            todosUsuarios.add(usuario);
+            if (admin.getAtivo()) { // Só mostra administradores ativos
+                Map<String, Object> usuario = new HashMap<>();
+                usuario.put("id", admin.getId());
+                usuario.put("nome", admin.getNome());
+                usuario.put("email", admin.getEmail());
+                usuario.put("login", admin.getLogin());            usuario.put("ativo", admin.getAtivo());
+                usuario.put("tipo", "ADMIN");
+                usuario.put("tipoTexto", "Administrador");
+                usuario.put("tipoClasse", "bg-danger");
+                usuario.put("documento", null); // Administradores não têm documento
+                usuario.put("telefone", admin.getTelefone());
+                usuario.put("cargo", admin.getCargo());
+                todosUsuarios.add(usuario);
+            }
         }
         
         model.addAttribute("pageTitle", "Gerenciar Usuários");
@@ -170,38 +176,7 @@ public class AdminController {    @Autowired
         model.addAttribute("totalAdministradores", administradores.size());
         
         return "admin/usuarios";
-    }
-    
-    @PostMapping("/usuarios/ativar/{tipo}/{id}")
-    public String ativarUsuario(@PathVariable String tipo, 
-                               @PathVariable Long id,
-                               RedirectAttributes redirectAttributes) {
-        try {
-            switch (tipo.toUpperCase()) {
-                case "CLIENTE":
-                    Cliente cliente = clienteService.buscarPorId(id);
-                    cliente.setAtivo(true);
-                    clienteService.salvar(cliente);
-                    break;
-                case "ORGANIZADOR":
-                    Organizador organizador = organizadorService.buscarPorId(id);
-                    organizador.setAtivo(true);
-                    organizadorService.salvar(organizador);
-                    break;
-                case "ADMIN":
-                    Administrador admin = administradorService.buscarPorId(id);
-                    admin.setAtivo(true);
-                    administradorService.salvar(admin);
-                    break;
-            }
-            redirectAttributes.addFlashAttribute("success", "Usuário ativado com sucesso!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Erro ao ativar usuário: " + e.getMessage());
-        }
-        
-        return "redirect:/admin/usuarios";
-    }
-    
+    }    
     @PostMapping("/usuarios/desativar/{tipo}/{id}")
     public String desativarUsuario(@PathVariable String tipo, 
                                   @PathVariable Long id,
@@ -225,54 +200,158 @@ public class AdminController {    @Autowired
                 case "ADMIN":
                     Administrador admin = administradorService.buscarPorId(id);
                     if (admin.getLogin().equals(loginAtual)) {
-                        redirectAttributes.addFlashAttribute("error", "Você não pode desativar sua própria conta!");
+                        redirectAttributes.addFlashAttribute("error", "Você não pode excluir sua própria conta!");
                         return "redirect:/admin/usuarios";
                     }
                     admin.setAtivo(false);
                     administradorService.salvar(admin);
                     break;
             }
-            redirectAttributes.addFlashAttribute("success", "Usuário desativado com sucesso!");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Erro ao desativar usuário: " + e.getMessage());
-        }
-        
-        return "redirect:/admin/usuarios";
-    }
-    
-    @PostMapping("/usuarios/excluir/{tipo}/{id}")
-    public String excluirUsuario(@PathVariable String tipo, 
-                                @PathVariable Long id,
-                                Authentication authentication,
-                                RedirectAttributes redirectAttributes) {
-        try {
-            // Verificar se não é o próprio admin tentando se excluir
-            String loginAtual = authentication.getName();
-            
-            switch (tipo.toUpperCase()) {
-                case "CLIENTE":
-                    clienteService.excluir(id);
-                    break;
-                case "ORGANIZADOR":
-                    organizadorService.excluir(id);
-                    break;
-                case "ADMIN":
-                    Administrador admin = administradorService.buscarPorId(id);
-                    if (admin.getLogin().equals(loginAtual)) {
-                        redirectAttributes.addFlashAttribute("error", "Você não pode excluir sua própria conta!");
-                        return "redirect:/admin/usuarios";
-                    }
-                    administradorService.excluir(id);
-                    break;
-            }
             redirectAttributes.addFlashAttribute("success", "Usuário excluído com sucesso!");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Erro ao excluir usuário: " + e.getMessage());
         }
+          return "redirect:/admin/usuarios";
+    }
+    
+    @GetMapping("/usuarios/editar/{tipo}/{id}")
+    public String editarUsuario(@PathVariable String tipo, 
+                               @PathVariable Long id,
+                               Model model,
+                               RedirectAttributes redirectAttributes) {
+        try {
+            switch (tipo.toUpperCase()) {
+                case "CLIENTE":
+                    Cliente cliente = clienteService.buscarPorId(id);
+                    model.addAttribute("usuario", cliente);
+                    model.addAttribute("tipoUsuario", "CLIENTE");
+                    break;
+                case "ORGANIZADOR":
+                    Organizador organizador = organizadorService.buscarPorId(id);
+                    model.addAttribute("usuario", organizador);
+                    model.addAttribute("tipoUsuario", "ORGANIZADOR");
+                    break;
+                case "ADMIN":
+                    Administrador admin = administradorService.buscarPorId(id);
+                    model.addAttribute("usuario", admin);
+                    model.addAttribute("tipoUsuario", "ADMIN");
+                    break;
+                default:
+                    redirectAttributes.addFlashAttribute("error", "Tipo de usuário inválido!");
+                    return "redirect:/admin/usuarios";
+            }
+            
+            model.addAttribute("pageTitle", "Editar " + tipo.toLowerCase());
+            return "admin/editar-usuario";
+            
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erro ao carregar usuário: " + e.getMessage());
+            return "redirect:/admin/usuarios";
+        }
+    }
+      @PostMapping("/usuarios/editar/CLIENTE/{id}")
+    public String salvarEdicaoCliente(@PathVariable Long id,
+                                     @ModelAttribute("usuario") Cliente cliente,
+                                     RedirectAttributes redirectAttributes) {
+        try {
+            cliente.setId(id);
+            clienteService.salvar(cliente);
+            redirectAttributes.addFlashAttribute("success", "Cliente editado com sucesso!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erro ao salvar cliente: " + e.getMessage());
+        }
         
         return "redirect:/admin/usuarios";
     }
     
+    @PostMapping("/usuarios/editar/ORGANIZADOR/{id}")
+    public String salvarEdicaoOrganizador(@PathVariable Long id,
+                                         @ModelAttribute("usuario") Organizador organizador,
+                                         RedirectAttributes redirectAttributes) {
+        try {
+            organizador.setId(id);
+            organizadorService.salvar(organizador);
+            redirectAttributes.addFlashAttribute("success", "Organizador editado com sucesso!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erro ao salvar organizador: " + e.getMessage());
+        }
+        
+        return "redirect:/admin/usuarios";
+    }
+    
+    @PostMapping("/usuarios/editar/ADMIN/{id}")
+    public String salvarEdicaoAdmin(@PathVariable Long id,
+                                   @ModelAttribute("usuario") Administrador administrador,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            administrador.setId(id);
+            administradorService.salvar(administrador);
+            redirectAttributes.addFlashAttribute("success", "Administrador editado com sucesso!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erro ao salvar administrador: " + e.getMessage());
+        }
+        
+        return "redirect:/admin/usuarios";
+    }
+    
+    @GetMapping("/usuarios/novo-admin")
+    public String novoAdmin(Model model) {
+        model.addAttribute("administrador", new Administrador());
+        model.addAttribute("pageTitle", "Cadastrar Novo Administrador");
+        return "admin/novo-admin";
+    }
+    
+    @PostMapping("/usuarios/novo-admin")
+    public String salvarNovoAdmin(@ModelAttribute("administrador") Administrador administrador,
+                                 RedirectAttributes redirectAttributes) {
+        try {
+            // Validações básicas
+            if (administrador.getNome() == null || administrador.getNome().trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Nome é obrigatório!");
+                return "redirect:/admin/usuarios/novo-admin";
+            }
+            
+            if (administrador.getEmail() == null || administrador.getEmail().trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Email é obrigatório!");
+                return "redirect:/admin/usuarios/novo-admin";
+            }
+            
+            if (administrador.getLogin() == null || administrador.getLogin().trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Login é obrigatório!");
+                return "redirect:/admin/usuarios/novo-admin";
+            }
+            
+            if (administrador.getSenha() == null || administrador.getSenha().trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("error", "Senha é obrigatória!");
+                return "redirect:/admin/usuarios/novo-admin";
+            }
+            
+            // Verificar se login já existe
+            if (administradorService.existePorLogin(administrador.getLogin())) {
+                redirectAttributes.addFlashAttribute("error", "Login já existe! Escolha outro.");
+                return "redirect:/admin/usuarios/novo-admin";
+            }
+            
+            // Verificar se email já existe
+            if (administradorService.existePorEmail(administrador.getEmail())) {
+                redirectAttributes.addFlashAttribute("error", "Email já cadastrado! Use outro email.");
+                return "redirect:/admin/usuarios/novo-admin";
+            }
+              // Definir valores padrão
+            administrador.setAtivo(true);
+            
+            // Salvar
+            administradorService.salvar(administrador);
+            redirectAttributes.addFlashAttribute("success", "Administrador cadastrado com sucesso!");
+            
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Erro ao cadastrar administrador: " + e.getMessage());
+            return "redirect:/admin/usuarios/novo-admin";
+        }
+        
+        return "redirect:/admin/usuarios";
+    }
+
     @GetMapping("/eventos")
     public String eventos(Model model) {
         model.addAttribute("pageTitle", "Gerenciar Eventos");

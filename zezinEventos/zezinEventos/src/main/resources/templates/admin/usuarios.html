@@ -50,8 +50,10 @@
                             Gerenciar Usuários
                         </h2>
                         <p class="text-muted mb-0">Administre todos os usuários do sistema</p>
-                    </div>
-                    <div>
+                    </div>                    <div>
+                        <a href="/admin/usuarios/novo-admin" class="btn btn-success me-2">
+                            <i class="bi bi-person-plus me-1"></i>Cadastrar Admin
+                        </a>
                         <a href="/admin/home" class="btn btn-outline-secondary">
                             <i class="bi bi-arrow-left me-1"></i>Voltar ao Dashboard
                         </a>
@@ -241,36 +243,19 @@
                                             <td>
                                                 <span th:if="${usuario.ativo}" class="badge bg-success">Ativo</span>
                                                 <span th:if="${!usuario.ativo}" class="badge bg-secondary">Inativo</span>
-                                            </td>
-                                            <td class="text-center">
+                                            </td>                                            <td class="text-center">
                                                 <div class="btn-group" role="group">
-                                                    <!-- Ativar/Desativar -->
-                                                    <div th:if="${usuario.ativo}">
-                                                        <form th:action="@{'/admin/usuarios/desativar/' + ${usuario.tipo} + '/' + ${usuario.id}}" 
-                                                              method="post" 
-                                                              style="display: inline;"
-                                                              onsubmit="return confirm('Tem certeza que deseja desativar este usuário?')">
-                                                            <button type="submit" class="btn btn-warning btn-action" title="Desativar">
-                                                                <i class="bi bi-pause-circle"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                    <div th:if="${!usuario.ativo}">
-                                                        <form th:action="@{'/admin/usuarios/ativar/' + ${usuario.tipo} + '/' + ${usuario.id}}" 
-                                                              method="post" 
-                                                              style="display: inline;">
-                                                            <button type="submit" class="btn btn-success btn-action" title="Ativar">
-                                                                <i class="bi bi-play-circle"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                    
-                                                    <!-- Excluir -->
-                                                    <form th:action="@{'/admin/usuarios/excluir/' + ${usuario.tipo} + '/' + ${usuario.id}}" 
+                                                    <!-- Editar -->
+                                                    <a th:href="@{'/admin/usuarios/editar/' + ${usuario.tipo} + '/' + ${usuario.id}}"
+                                                       class="btn btn-primary btn-action" title="Editar">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                      <!-- Excluir (Exclusão Lógica) -->
+                                                    <form th:action="@{'/admin/usuarios/desativar/' + ${usuario.tipo} + '/' + ${usuario.id}}" 
                                                           method="post" 
                                                           style="display: inline;"
-                                                          onsubmit="return confirm('ATENÇÃO: Esta ação não pode ser desfeita! Tem certeza que deseja excluir este usuário?')">
-                                                        <button type="submit" class="btn btn-danger btn-action" title="Excluir">
+                                                          onsubmit="return confirm('Tem certeza que deseja excluir este usuário?')">
+                                                        <button type="submit" class="btn btn-danger btn-action" title="Excluir Usuário">
                                                             <i class="bi bi-trash"></i>
                                                         </button>
                                                     </form>
@@ -292,19 +277,13 @@
     <script>
         // Auto-focus no campo de busca
         document.getElementById('busca').focus();
-        
-        // Confirmar ações críticas
+          // Confirmar ações críticas
         document.querySelectorAll('form[onsubmit*="confirm"]').forEach(form => {
             form.addEventListener('submit', function(e) {
-                const isDelete = this.action.includes('/excluir/');
                 const isDeactivate = this.action.includes('/desativar/');
                 
-                if (isDelete) {
-                    if (!confirm('⚠️ ATENÇÃO: Esta ação é irreversível!\n\nTem certeza que deseja EXCLUIR este usuário?\nTodos os dados relacionados serão perdidos.')) {
-                        e.preventDefault();
-                    }
-                } else if (isDeactivate) {
-                    if (!confirm('Tem certeza que deseja desativar este usuário?\nEle não poderá mais acessar o sistema.')) {
+                if (isDeactivate) {
+                    if (!confirm('Tem certeza que deseja excluir este usuário?\nEle não poderá mais acessar o sistema.')) {
                         e.preventDefault();
                     }
                 }
