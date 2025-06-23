@@ -151,11 +151,11 @@ public class AdminController {    @Autowired
             usuario.put("id", admin.getId());
             usuario.put("nome", admin.getNome());
             usuario.put("email", admin.getEmail());
-            usuario.put("login", admin.getLogin());
-            usuario.put("ativo", admin.getAtivo());
+            usuario.put("login", admin.getLogin());            usuario.put("ativo", admin.getAtivo());
             usuario.put("tipo", "ADMIN");
             usuario.put("tipoTexto", "Administrador");
             usuario.put("tipoClasse", "bg-danger");
+            usuario.put("documento", null); // Administradores não têm documento
             usuario.put("telefone", admin.getTelefone());
             usuario.put("cargo", admin.getCargo());
             todosUsuarios.add(usuario);

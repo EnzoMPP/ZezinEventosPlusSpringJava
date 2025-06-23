@@ -207,15 +207,14 @@
                                                     </div>
                                                     <div>
                                                         <div class="fw-bold" th:text="${usuario.nome}">Nome</div>
-                                                        <div class="small text-muted" th:text="${usuario.login}">Login</div>
-                                                        <div th:if="${usuario.empresa != null}" class="small text-muted">
-                                                            <i class="bi bi-building me-1"></i>
-                                                            <span th:text="${usuario.empresa}">Empresa</span>
-                                                        </div>
-                                                        <div th:if="${usuario.cargo != null}" class="small text-muted">
-                                                            <i class="bi bi-briefcase me-1"></i>
-                                                            <span th:text="${usuario.cargo}">Cargo</span>
-                                                        </div>
+                                                        <div class="small text-muted" th:text="${usuario.login}">Login</div>                                        <div th:if="${usuario.containsKey('empresa') && usuario.empresa != null}" class="small text-muted">
+                                            <i class="bi bi-building me-1"></i>
+                                            <span th:text="${usuario.empresa}">Empresa</span>
+                                        </div>
+                                        <div th:if="${usuario.containsKey('cargo') && usuario.cargo != null}" class="small text-muted">
+                                            <i class="bi bi-briefcase me-1"></i>
+                                            <span th:text="${usuario.cargo}">Cargo</span>
+                                        </div>
                                                     </div>
                                                 </div>
                                             </td>
@@ -234,11 +233,10 @@
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td>
-                                                <span th:if="${usuario.documento != null}" 
+                                            <td>                                                <span th:if="${usuario.containsKey('documento') && usuario.documento != null}" 
                                                       class="font-monospace small" 
                                                       th:text="${usuario.documento}">Documento</span>
-                                                <span th:if="${usuario.documento == null}" class="text-muted">-</span>
+                                                <span th:if="${!usuario.containsKey('documento') || usuario.documento == null}" class="text-muted">-</span>
                                             </td>
                                             <td>
                                                 <span th:if="${usuario.ativo}" class="badge bg-success">Ativo</span>
