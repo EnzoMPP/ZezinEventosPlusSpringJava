@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head th:replace="~{fragments/components :: head}"></head>
+
+<body>
+    <div th:replace="~{fragments/components :: navbar-organizador}"></div>
+
+    <div class="container mt-4">
+        <!-- Cabeçalho -->
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <div class="d-flex align-items-center">
+                        <a href="/organizador/home" class="btn btn-outline-secondary me-3">
+                            <i class="bi bi-arrow-left"></i>
+                        </a>
+                        <h2 class="text-warning mb-0">
+                            <i class="bi bi-graph-up me-2"></i>Relatórios
+                        </h2>
+                    </div>
+                    <div>
+                        <a href="/organizador/eventos" class="btn btn-outline-warning me-2">
+                            <i class="bi bi-calendar-event me-2"></i>Meus Eventos
+                        </a>
+                        <a href="/organizador/criar-evento" class="btn btn-warning text-dark">
+                            <i class="bi bi-plus-circle me-2"></i>Criar Evento
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cards de estatísticas gerais -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="card bg-primary text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-calendar-event display-4 mb-3"></i>
+                        <h3 th:text="${totalEventos}">0</h3>
+                        <p class="mb-0">Total de Eventos</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="card bg-success text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-calendar-check display-4 mb-3"></i>
+                        <h3 th:text="${eventosAtivos}">0</h3>
+                        <p class="mb-0">Eventos Ativos</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="card bg-info text-white h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-people display-4 mb-3"></i>
+                        <h3 th:text="${totalInscricoes}">0</h3>
+                        <p class="mb-0">Total de Inscrições</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <div class="card bg-warning text-dark h-100">
+                    <div class="card-body text-center">
+                        <i class="bi bi-graph-up display-4 mb-3"></i>
+                        <h3 th:text="${#numbers.formatDecimal(taxaOcupacao, 1, 1)} + '%'">0%</h3>
+                        <p class="mb-0">Taxa de Ocupação</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Evento mais popular -->
+        <div th:if="${eventoMaisPopular != null}" class="row mb-4">
+            <div class="col-12">
+                <div class="card border-warning">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">
+                            <i class="bi bi-trophy me-2"></i>Evento Mais Popular
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-8">
+                                <h6 class="text-warning mb-1" th:text="${eventoMaisPopular.nome}">Nome do Evento</h6>
+                                <p class="text-muted mb-2" th:text="${eventoMaisPopular.descricao}">Descrição</p>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-success me-2" th:text="${eventoMaisPopular.vagasOcupadas} + ' inscritos'">0 inscritos</span>
+                                    <span class="text-muted" th:text="'Data: ' + ${#temporals.format(eventoMaisPopular.dataEvento, 'dd/MM/yyyy HH:mm')}">Data</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="display-6 text-warning" th:text="${eventoMaisPopular.vagasOcupadas}">0</div>
+                                <small class="text-muted">inscrições</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabela detalhada de eventos -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">
+                            <i class="bi bi-table me-2"></i>Detalhamento por Evento
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div th:if="${eventos != null and !eventos.empty}" class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Evento</th>
+                                        <th>Data</th>
+                                        <th>Status</th>
+                                        <th>Inscrições</th>
+                                        <th>Taxa Ocupação</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="evento : ${eventos}">
+                                        <td>
+                                            <div>
+                                                <h6 class="mb-1" th:text="${evento.nome}">Nome do Evento</h6>
+                                                <small class="text-muted" th:text="${evento.local}">Local</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span th:text="${#temporals.format(evento.dataEvento, 'dd/MM/yyyy')}">Data</span>
+                                            <br>
+                                            <small class="text-muted" th:text="${#temporals.format(evento.dataEvento, 'HH:mm')}">Hora</small>
+                                        </td>
+                                        <td>
+                                            <span th:if="${evento.dataEvento.isAfter(T(java.time.LocalDateTime).now())}" 
+                                                  class="badge bg-success">Ativo</span>
+                                            <span th:unless="${evento.dataEvento.isAfter(T(java.time.LocalDateTime).now())}" 
+                                                  class="badge bg-secondary">Finalizado</span>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="me-2">
+                                                    <strong th:text="${evento.vagasOcupadas} + '/' + ${evento.vagasTotais}">0/0</strong>
+                                                </div>
+                                                <div class="progress flex-grow-1" style="height: 8px; width: 60px;">
+                                                    <div class="progress-bar" 
+                                                         th:classappend="${(evento.vagasOcupadas * 100.0 / evento.vagasTotais) >= 80} ? 'bg-warning' : 'bg-success'"
+                                                         th:style="'width: ' + ${T(java.lang.Math).round((evento.vagasOcupadas * 100.0) / evento.vagasTotais)} + '%;'">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span th:text="${#numbers.formatDecimal((evento.vagasOcupadas * 100.0) / evento.vagasTotais, 1, 1)} + '%'">0%</span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a th:href="@{'/organizador/eventos/editar/' + ${evento.id}}" 
+                                                   class="btn btn-outline-warning btn-sm">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <button class="btn btn-outline-info btn-sm" 
+                                                        data-bs-toggle="modal" 
+                                                        th:data-bs-target="'#detalhesModal' + ${evento.id}">
+                                                    <i class="bi bi-eye"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Estado vazio -->
+                        <div th:if="${eventos == null or eventos.empty}" class="text-center py-5">
+                            <i class="bi bi-calendar-x display-1 text-muted mb-3"></i>
+                            <h5 class="text-muted">Nenhum evento encontrado</h5>
+                            <p class="text-muted">Você ainda não criou nenhum evento.</p>
+                            <a href="/organizador/criar-evento" class="btn btn-warning text-dark">
+                                <i class="bi bi-plus-circle me-2"></i>Criar Primeiro Evento
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumo das estatísticas -->
+        <div th:if="${eventos != null and !eventos.empty}" class="row mt-4">
+            <div class="col-12">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            <i class="bi bi-info-circle me-2"></i>Resumo Geral
+                        </h6>
+                        <div class="row text-center">
+                            <div class="col-md-3">
+                                <div class="h4 text-primary" th:text="${totalEventos}">0</div>
+                                <small class="text-muted">Eventos Criados</small>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="h4 text-success" th:text="${eventosFinalizados}">0</div>
+                                <small class="text-muted">Eventos Finalizados</small>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="h4 text-info" th:text="${totalVagas}">0</div>
+                                <small class="text-muted">Total de Vagas</small>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="h4 text-warning" th:text="${totalInscricoes}">0</div>
+                                <small class="text-muted">Pessoas Alcançadas</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modais de detalhes dos eventos -->
+    <div th:each="evento : ${eventos}" th:id="'detalhesModal' + ${evento.id}" class="modal fade" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" th:text="${evento.nome}">Detalhes do Evento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Descrição:</strong>
+                            <p th:text="${evento.descricao}">Descrição do evento</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Local:</strong>
+                            <p th:text="${evento.local}">Local do evento</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Data e Hora:</strong>
+                            <p th:text="${#temporals.format(evento.dataEvento, 'dd/MM/yyyy HH:mm')}">Data</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Tipo:</strong>
+                            <p th:text="${evento.tipo}">Tipo do evento</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Palestrantes:</strong>
+                            <p th:text="${evento.palestrantes ?: 'Não informado'}">Palestrantes</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Inscrições:</strong>
+                            <p>
+                                <span th:text="${evento.vagasOcupadas}">0</span> de 
+                                <span th:text="${evento.vagasTotais}">0</span> vagas ocupadas
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <a th:href="@{'/organizador/eventos/editar/' + ${evento.id}}" class="btn btn-warning text-dark">
+                        <i class="bi bi-pencil me-2"></i>Editar Evento
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/components :: scripts}"></div>
+</body>
+
+</html>

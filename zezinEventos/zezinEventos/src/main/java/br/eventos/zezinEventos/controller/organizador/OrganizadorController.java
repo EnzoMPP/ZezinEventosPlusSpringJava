@@ -1,9 +1,11 @@
 package br.eventos.zezinEventos.controller;
 
 import br.eventos.zezinEventos.model.Evento;
+import br.eventos.zezinEventos.model.Inscricao;
 import br.eventos.zezinEventos.model.Organizador;
 import br.eventos.zezinEventos.model.TipoEvento;
 import br.eventos.zezinEventos.service.EventoService;
+import br.eventos.zezinEventos.service.InscricaoService;
 import br.eventos.zezinEventos.service.OrganizadorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,25 +20,36 @@ import java.util.List;
 @Controller
 @RequestMapping("/organizador")
 @PreAuthorize("hasRole('ORGANIZADOR')")
-public class OrganizadorController {
-
-    @Autowired
+public class OrganizadorController {    @Autowired
     private OrganizadorService organizadorService;
     
     @Autowired
     private EventoService eventoService;
-
-    @GetMapping("/home")
+    
+    @Autowired
+    private InscricaoService inscricaoService;    @GetMapping("/home")
     public String organizadorHome(Model model, Authentication authentication) {
         // Busca dados do organizador logado
         Organizador organizador = organizadorService.buscarPorLogin(authentication.getName());
+        List<Evento> eventosDoOrganizador = eventoService.listarPorOrganizador(organizador);
+        
+        // Calcular estatísticas reais
+        long totalEventos = eventosDoOrganizador.size();
+        long eventosAtivos = eventosDoOrganizador.stream()
+            .filter(e -> e.getDataEvento().isAfter(java.time.LocalDateTime.now()))
+            .count();
+        long eventosFinalizados = totalEventos - eventosAtivos;
+        
+        long totalInscricoes = eventosDoOrganizador.stream()
+            .mapToLong(evento -> inscricaoService.contarInscricoesPorEvento(evento))
+            .sum();
         
         model.addAttribute("pageTitle", "Dashboard do Organizador");
         model.addAttribute("organizador", organizador);
-        model.addAttribute("totalEventos", 0); 
-        model.addAttribute("eventosAtivos", 0);
-        model.addAttribute("totalInscricoes", 0);
-        model.addAttribute("eventosPendentes", 0);
+        model.addAttribute("totalEventos", totalEventos); 
+        model.addAttribute("eventosAtivos", eventosAtivos);
+        model.addAttribute("eventosFinalizados", eventosFinalizados);
+        model.addAttribute("totalInscricoes", totalInscricoes);
         
         return "organizador/home";
     }
@@ -146,13 +159,46 @@ public class OrganizadorController {
         
         return "redirect:/organizador/eventos";
     }
-    
-    @GetMapping("/relatorios")
+      @GetMapping("/relatorios")
     public String relatorios(Model model, Authentication authentication) {
         Organizador organizador = organizadorService.buscarPorLogin(authentication.getName());
+        List<Evento> eventosDoOrganizador = eventoService.listarPorOrganizador(organizador);
         
+        // Calcular estatísticas
+        long totalEventos = eventosDoOrganizador.size();
+        long eventosAtivos = eventosDoOrganizador.stream()
+            .filter(e -> e.getDataEvento().isAfter(java.time.LocalDateTime.now()))
+            .count();
+        long eventosFinalizados = totalEventos - eventosAtivos;
+        
+        long totalInscricoes = eventosDoOrganizador.stream()
+            .mapToLong(evento -> inscricaoService.contarInscricoesPorEvento(evento))
+            .sum();
+            
+        long totalVagas = eventosDoOrganizador.stream()
+            .mapToLong(Evento::getVagasTotais)
+            .sum();
+            
+        double taxaOcupacao = totalVagas > 0 ? (totalInscricoes * 100.0) / totalVagas : 0;
+        
+        // Evento com mais inscrições
+        Evento eventoMaisPopular = eventosDoOrganizador.stream()
+            .max((e1, e2) -> Long.compare(
+                inscricaoService.contarInscricoesPorEvento(e1),
+                inscricaoService.contarInscricoesPorEvento(e2)
+            ))
+            .orElse(null);
+            
         model.addAttribute("pageTitle", "Relatórios");
         model.addAttribute("organizador", organizador);
+        model.addAttribute("eventos", eventosDoOrganizador);
+        model.addAttribute("totalEventos", totalEventos);
+        model.addAttribute("eventosAtivos", eventosAtivos);
+        model.addAttribute("eventosFinalizados", eventosFinalizados);
+        model.addAttribute("totalInscricoes", totalInscricoes);
+        model.addAttribute("totalVagas", totalVagas);
+        model.addAttribute("taxaOcupacao", taxaOcupacao);
+        model.addAttribute("eventoMaisPopular", eventoMaisPopular);
         
         return "organizador/relatorios";
     }

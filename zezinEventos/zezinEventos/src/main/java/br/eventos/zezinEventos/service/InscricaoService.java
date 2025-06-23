@@ -108,4 +108,11 @@ public class InscricaoService {
     public List<Inscricao> listarEventosFinalizados(Cliente cliente) {
         return inscricaoDAO.findEventosFinalizadosByCliente(cliente);
     }
+    
+    /**
+     * Conta total de inscrições de um evento
+     */
+    public Long contarInscricoesPorEvento(Evento evento) {
+        return inscricaoDAO.countByEvento(evento);
+    }
 }
