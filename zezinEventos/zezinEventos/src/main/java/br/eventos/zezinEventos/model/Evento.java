@@ -48,9 +48,11 @@ public class Evento {
     
     @Column(name = "vagas_ocupadas")
     private Integer vagasOcupadas = 0;
-    
-    @Column(nullable = false)
+      @Column(nullable = false)
     private Boolean ativo = true;
+    
+    @Column(columnDefinition = "TEXT")
+    private String palestrantes;
     
     @CreationTimestamp
     @Column(name = "data_criacao")
