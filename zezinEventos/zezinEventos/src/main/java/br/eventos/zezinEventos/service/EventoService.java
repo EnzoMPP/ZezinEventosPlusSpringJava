@@ -27,7 +27,9 @@ public class EventoService {
         return eventoDAO.findByOrganizador(organizador);
     }
 
-    // Lista eventos abertos para inscrição
+    /**
+     * Lista eventos abertos para inscrição (para clientes)
+     */
     public List<Evento> listarEventosAbertos() {
         return eventoDAO.findEventosAbertos();
     }

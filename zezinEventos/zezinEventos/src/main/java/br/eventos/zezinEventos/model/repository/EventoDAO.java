@@ -33,4 +33,8 @@ public interface EventoDAO extends JpaRepository<Evento, Long> {
     
     // Busca por nome (case insensitive)
     List<Evento> findByNomeContainingIgnoreCase(String nome);
+    
+    // Buscar eventos abertos para inscrição
+    @Query("SELECT e FROM Evento e WHERE e.status = 'ABERTO' AND e.dataEvento > CURRENT_TIMESTAMP ORDER BY e.dataEvento ASC")
+    List<Evento> findEventosAbertos();
 }
