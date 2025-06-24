@@ -22,9 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class OrganizadorEventoController {
 
     @Autowired
-    private OrganizadorEventoServiceInterface eventoService;
-
-    /**
+    private OrganizadorEventoServiceInterface eventoService;    /**
      * Lista todos os eventos do organizador.
      */
     @GetMapping("/eventos")
@@ -33,17 +31,20 @@ public class OrganizadorEventoController {
             OrganizadorEventosDTO eventosData = eventoService.obterEventosDoOrganizador(authentication.getName());
             
             if (eventosData == null) {
-                model.addAttribute("error", "Erro ao carregar eventos");
-                return "organizador/eventos";
+                // Se não conseguir carregar dados, criar um DTO vazio para evitar null
+                eventosData = new OrganizadorEventosDTO();
             }
             
             model.addAttribute("pageTitle", "Meus Eventos");
             model.addAttribute("eventosData", eventosData);
+            // Também adicionar os eventos diretamente para compatibilidade com o template
+            model.addAttribute("eventos", eventosData.getEventos());
             
             return "organizador/eventos";
             
         } catch (Exception e) {
             model.addAttribute("error", "Erro ao carregar eventos: " + e.getMessage());
+            model.addAttribute("eventos", java.util.Collections.emptyList()); // Lista vazia para evitar null
             return "organizador/eventos";
         }
     }

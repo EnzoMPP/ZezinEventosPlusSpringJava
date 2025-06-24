@@ -6,10 +6,12 @@ import br.eventos.zezinEventos.model.Organizador;
  * DTO para transferência de dados do dashboard do organizador.
  * Encapsula informações do dashboard e estatísticas dos eventos do organizador.
  */
-public class OrganizadorDashboardDTO {
-      private Long organizadorId;
+public class OrganizadorDashboardDTO {      private Long organizadorId;
     private String nomeOrganizador;
+    private String emailOrganizador;
     private String empresa;
+    private String cnpj;
+    private String telefone;
     private Long totalEventos;
     private Long eventosAtivos;
     private Long eventosFinalizados;
@@ -27,7 +29,10 @@ public class OrganizadorDashboardDTO {
                                   Long totalInscricoes) {        if (organizador != null) {
             this.organizadorId = organizador.getId();
             this.nomeOrganizador = organizador.getNome();
+            this.emailOrganizador = organizador.getEmail();
             this.empresa = organizador.getEmpresa();
+            this.cnpj = organizador.getCnpj();
+            this.telefone = organizador.getTelefone();
         }
         this.totalEventos = totalEventos;
         this.eventosAtivos = eventosAtivos;
@@ -57,13 +62,36 @@ public class OrganizadorDashboardDTO {
     
     public void setNomeOrganizador(String nomeOrganizador) {
         this.nomeOrganizador = nomeOrganizador;
-    }
-      public String getEmpresa() {
+    }      public String getEmpresa() {
         return empresa;
     }
     
     public void setEmpresa(String empresa) {
         this.empresa = empresa;
+    }
+    
+    public String getEmailOrganizador() {
+        return emailOrganizador;
+    }
+    
+    public void setEmailOrganizador(String emailOrganizador) {
+        this.emailOrganizador = emailOrganizador;
+    }
+    
+    public String getCnpj() {
+        return cnpj;
+    }
+    
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
+    }
+    
+    public String getTelefone() {
+        return telefone;
+    }
+    
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
     }
     
     public Long getTotalEventos() {
