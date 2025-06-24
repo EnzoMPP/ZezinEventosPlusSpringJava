@@ -33,11 +33,16 @@ public class AdministradorService {
     public Administrador buscarPorLogin(String login) {
         return repo.findByLogin(login);
     }
+    
+    // Busca administrador por email
+    public Administrador buscarPorEmail(String email) {
+        return repo.findByEmail(email);
+    }
 
     // Busca administradores por nome
     public List<Administrador> buscarPorNome(String nome) {
         return repo.findByNomeContainingIgnoreCase(nome);
-    }    // Salva ou atualiza um administrador
+    }// Salva ou atualiza um administrador
     public Administrador salvar(Administrador administrador) {
         if (administrador.getId() == null) {
             // Novo administrador - criptografar senha
@@ -54,7 +59,32 @@ public class AdministradorService {
                 // Manter senha existente se não foi alterada
                 administrador.setSenha(existente.getSenha());
             }
+        }        return repo.save(administrador);
+    }
+    
+    // Atualiza um administrador existente
+    public Administrador atualizar(Administrador administrador) {
+        if (administrador.getId() == null) {
+            throw new RuntimeException("ID do administrador é obrigatório para atualização");
         }
+        
+        Administrador existente = repo.findById(administrador.getId()).orElse(null);
+        if (existente == null) {
+            throw new RuntimeException("Administrador não encontrado para atualização");
+        }
+        
+        // Verificar se senha foi alterada
+        if (administrador.getSenha() != null && !administrador.getSenha().trim().isEmpty() 
+            && !administrador.getSenha().equals(existente.getSenha())) {
+            // Senha foi alterada, criptografar se não estiver já criptografada
+            if (!administrador.getSenha().startsWith("$2a$")) {
+                administrador.setSenha(passwordEncoder.encode(administrador.getSenha()));
+            }
+        } else {
+            // Manter senha existente
+            administrador.setSenha(existente.getSenha());
+        }
+        
         return repo.save(administrador);
     }
 
