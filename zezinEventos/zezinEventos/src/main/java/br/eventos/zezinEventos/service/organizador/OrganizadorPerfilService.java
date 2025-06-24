@@ -8,10 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Implementação do serviço para gerenciamento de perfil/empresa do organizador.
+ * Implementação do serviço para gerenciamento de perfil completo do organizador.
  * 
  * Esta classe segue o Princípio da Responsabilidade Única (SRP) ao focar
- * exclusivamente nas operações de perfil do organizador.
+ * exclusivamente nas operações de perfil do organizador, incluindo tanto
+ * dados herdados de usuário quanto específicos do organizador.
  */
 @Service
 public class OrganizadorPerfilService implements OrganizadorPerfilServiceInterface {
@@ -40,8 +41,7 @@ public class OrganizadorPerfilService implements OrganizadorPerfilServiceInterfa
         } catch (Exception e) {
             return null;
         }
-    }
-      @Override
+    }    @Override
     public void atualizarPerfil(OrganizadorPerfilDTO perfilAtualizado, String loginAtual) {
         try {
             // Validações básicas
@@ -59,15 +59,35 @@ public class OrganizadorPerfilService implements OrganizadorPerfilServiceInterfa
                 throw new RuntimeException("Organizador não encontrado");
             }
             
-            // Validações de duplicidade
+            // Validações de duplicidade - Email
             if (!organizadorAtual.getEmail().equals(perfilAtualizado.getEmail()) && 
                 organizadorService.existeEmail(perfilAtualizado.getEmail())) {
                 throw new RuntimeException("Este email já está sendo usado por outro organizador.");
             }
             
+            // Validações de duplicidade - CNPJ
             if (!organizadorAtual.getCnpj().equals(perfilAtualizado.getCnpj()) && 
                 organizadorService.existeCnpj(perfilAtualizado.getCnpj())) {
                 throw new RuntimeException("Este CNPJ já está sendo usado por outro organizador.");
+            }
+            
+            // Validações de duplicidade - Login (se foi alterado)
+            if (perfilAtualizado.getLogin() != null && 
+                !organizadorAtual.getLogin().equals(perfilAtualizado.getLogin()) && 
+                organizadorService.existeLogin(perfilAtualizado.getLogin())) {
+                throw new RuntimeException("Este login já está sendo usado por outro organizador.");
+            }
+            
+            // Validação de senha (se foi informada)
+            if (perfilAtualizado.getSenha() != null && !perfilAtualizado.getSenha().trim().isEmpty()) {
+                if (perfilAtualizado.getConfirmarSenha() == null || 
+                    !perfilAtualizado.getSenha().equals(perfilAtualizado.getConfirmarSenha())) {
+                    throw new RuntimeException("As senhas não coincidem.");
+                }
+                
+                if (perfilAtualizado.getSenha().length() < 6) {
+                    throw new RuntimeException("A senha deve ter pelo menos 6 caracteres.");
+                }
             }
             
             // Atualizar dados do organizador
@@ -76,6 +96,16 @@ public class OrganizadorPerfilService implements OrganizadorPerfilServiceInterfa
             organizadorAtual.setTelefone(perfilAtualizado.getTelefone());
             organizadorAtual.setEmpresa(perfilAtualizado.getEmpresa());
             organizadorAtual.setCnpj(perfilAtualizado.getCnpj());
+            
+            // Atualizar login se foi alterado
+            if (perfilAtualizado.getLogin() != null && !perfilAtualizado.getLogin().trim().isEmpty()) {
+                organizadorAtual.setLogin(perfilAtualizado.getLogin());
+            }
+            
+            // Atualizar senha se foi informada
+            if (perfilAtualizado.getSenha() != null && !perfilAtualizado.getSenha().trim().isEmpty()) {
+                organizadorAtual.setSenha(perfilAtualizado.getSenha());
+            }
             
             // Salvar organizador
             organizadorService.salvar(organizadorAtual);
@@ -98,8 +128,7 @@ public class OrganizadorPerfilService implements OrganizadorPerfilServiceInterfa
         
         return !organizadorService.existeEmail(novoEmail);
     }
-    
-    @Override
+      @Override
     public boolean validarDisponibilidadeCnpj(String novoCnpj, String cnpjAtual) {
         if (novoCnpj == null || novoCnpj.trim().isEmpty()) {
             return false;
@@ -111,5 +140,19 @@ public class OrganizadorPerfilService implements OrganizadorPerfilServiceInterfa
         }
         
         return !organizadorService.existeCnpj(novoCnpj);
+    }
+    
+    @Override
+    public boolean validarDisponibilidadeLogin(String novoLogin, String loginAtual) {
+        if (novoLogin == null || novoLogin.trim().isEmpty()) {
+            return false;
+        }
+        
+        // Se o login não mudou, está disponível
+        if (novoLogin.equals(loginAtual)) {
+            return true;
+        }
+        
+        return !organizadorService.existeLogin(novoLogin);
     }
 }

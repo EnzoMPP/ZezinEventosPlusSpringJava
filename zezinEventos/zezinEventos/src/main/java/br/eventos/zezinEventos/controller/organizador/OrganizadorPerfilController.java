@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
- * Controller responsável pelo gerenciamento do perfil/empresa do organizador.
- * Gerencia informações pessoais e dados da empresa.
+ * Controller responsável pelo gerenciamento do perfil completo do organizador.
+ * Gerencia tanto informações pessoais herdadas de usuário quanto dados específicos do organizador.
  */
 @Controller
 @RequestMapping("/organizador")
@@ -20,51 +20,53 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class OrganizadorPerfilController {
 
     @Autowired
-    private OrganizadorPerfilServiceInterface perfilService;
-
-    /**
-     * Exibe a página de informações da empresa/perfil.
+    private OrganizadorPerfilServiceInterface perfilService;    /**
+     * Exibe a página de perfil completo do organizador.
      */
-    @GetMapping("/empresa")
-    public String empresa(Model model, Authentication authentication) {
+    @GetMapping("/perfil")
+    public String perfil(Model model, Authentication authentication) {
         try {
             OrganizadorPerfilDTO perfilData = perfilService.obterPerfilOrganizador(authentication.getName());
             
             if (perfilData == null) {
                 model.addAttribute("error", "Erro ao carregar dados do perfil");
-                return "organizador/empresa";
+                return "organizador/perfil";
             }
             
-            model.addAttribute("pageTitle", "Informações da Empresa");
+            model.addAttribute("pageTitle", "Meu Perfil");
             model.addAttribute("organizador", perfilData);
             
-            return "organizador/empresa";
+            return "organizador/perfil";
             
         } catch (Exception e) {
             model.addAttribute("error", "Erro ao carregar perfil: " + e.getMessage());
-            return "organizador/empresa";
+            return "organizador/perfil";
         }
-    }
-
-    /**
-     * Processa a atualização das informações da empresa/perfil.
+    }    /**
+     * Processa a atualização do perfil completo do organizador.
      */
-    @PostMapping("/empresa/salvar")
-    public String salvarEmpresa(@ModelAttribute OrganizadorPerfilDTO organizadorDto,
-                               Authentication authentication,
-                               RedirectAttributes redirectAttributes,
-                               Model model) {
+    @PostMapping("/perfil/salvar")
+    public String salvarPerfil(@ModelAttribute OrganizadorPerfilDTO organizadorDto,
+                              Authentication authentication,
+                              RedirectAttributes redirectAttributes,
+                              Model model) {
         try {
             perfilService.atualizarPerfil(organizadorDto, authentication.getName());
             
-            redirectAttributes.addFlashAttribute("success", "Informações da empresa atualizadas com sucesso!");
-            return "redirect:/organizador/empresa";
+            redirectAttributes.addFlashAttribute("success", "Perfil atualizado com sucesso!");
+            return "redirect:/organizador/perfil";
             
         } catch (Exception e) {
-            model.addAttribute("pageTitle", "Informações da Empresa");
+            model.addAttribute("pageTitle", "Meu Perfil");
             model.addAttribute("organizador", organizadorDto);
             model.addAttribute("error", e.getMessage());
-            return "organizador/empresa";
+            return "organizador/perfil";
         }
+    }
+
+    // Redirect para compatibilidade com links antigos
+    @GetMapping("/empresa")
+    public String empresaRedirect() {
+        return "redirect:/organizador/perfil";
     }
 }

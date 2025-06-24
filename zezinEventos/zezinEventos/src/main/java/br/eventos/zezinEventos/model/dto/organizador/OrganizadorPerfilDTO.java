@@ -3,23 +3,25 @@ package br.eventos.zezinEventos.model.dto.organizador;
 import br.eventos.zezinEventos.model.Organizador;
 
 /**
- * DTO para transferência de dados do perfil/empresa do organizador.
- * Encapsula informações específicas do perfil e dados da empresa.
+ * DTO para transferência de dados do perfil completo do organizador.
+ * Encapsula tanto informações pessoais herdadas de usuário quanto dados específicos de organizador.
  */
 public class OrganizadorPerfilDTO {
     
     private Long id;
     private String nome;
     private String email;
-    private String telefone;    private String login;
+    private String telefone;
+    private String login;
+    private String senha;
+    private String confirmarSenha;
     private String empresa;
     private String cnpj;
     private Boolean ativo;
     
     // Construtores
     public OrganizadorPerfilDTO() {}
-    
-    /**
+      /**
      * Construtor que cria um DTO a partir de um Organizador.
      */
     public OrganizadorPerfilDTO(Organizador organizador) {
@@ -27,10 +29,12 @@ public class OrganizadorPerfilDTO {
             this.id = organizador.getId();
             this.nome = organizador.getNome();
             this.email = organizador.getEmail();
-            this.telefone = organizador.getTelefone();            this.login = organizador.getLogin();
+            this.telefone = organizador.getTelefone();
+            this.login = organizador.getLogin();
             this.empresa = organizador.getEmpresa();
             this.cnpj = organizador.getCnpj();
             this.ativo = organizador.getAtivo();
+            // Senha não é preenchida por segurança
         }
     }
     
@@ -70,9 +74,24 @@ public class OrganizadorPerfilDTO {
     public String getLogin() {
         return login;
     }
-    
-    public void setLogin(String login) {
+      public void setLogin(String login) {
         this.login = login;
+    }
+    
+    public String getSenha() {
+        return senha;
+    }
+    
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+    
+    public String getConfirmarSenha() {
+        return confirmarSenha;
+    }
+    
+    public void setConfirmarSenha(String confirmarSenha) {
+        this.confirmarSenha = confirmarSenha;
     }
       public String getEmpresa() {
         return empresa;
@@ -114,26 +133,29 @@ public class OrganizadorPerfilDTO {
         organizador.setAtivo(this.ativo);
         return organizador;
     }
-    
-    /**
+      /**
      * Atualiza uma entidade Organizador existente com os dados do DTO.
      */
     public void atualizarEntidade(Organizador organizadorExistente) {
         if (organizadorExistente != null) {
             organizadorExistente.setNome(this.nome);
-            organizadorExistente.setEmail(this.email);            organizadorExistente.setTelefone(this.telefone);
+            organizadorExistente.setEmail(this.email);
+            organizadorExistente.setTelefone(this.telefone);
+            if (this.login != null && !this.login.trim().isEmpty()) {
+                organizadorExistente.setLogin(this.login);
+            }
             organizadorExistente.setEmpresa(this.empresa);
             organizadorExistente.setCnpj(this.cnpj);
-            // Login e status ativo são preservados
+            // Status ativo é preservado, senha é tratada separadamente por segurança
         }
     }
-    
-    @Override
+      @Override
     public String toString() {
         return "OrganizadorPerfilDTO{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
-                ", email='" + email + '\'' +                ", telefone='" + telefone + '\'' +
+                ", email='" + email + '\'' +
+                ", telefone='" + telefone + '\'' +
                 ", login='" + login + '\'' +
                 ", empresa='" + empresa + '\'' +
                 ", cnpj='" + cnpj + '\'' +
