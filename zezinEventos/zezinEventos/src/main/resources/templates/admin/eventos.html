@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Gerenciar Eventos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        .table th {
+            border-top: none;
+            font-weight: 600;
+            color: #495057;
+            background-color: #f8f9fa;
+        }
+        .event-status {
+            font-size: 0.875rem;
+        }
+        .btn-action {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+        .stats-card {
+            transition: transform 0.2s ease-in-out;
+        }
+        .stats-card:hover {
+            transform: translateY(-2px);
+        }
+        .progress-thin {
+            height: 0.5rem;
+        }
+        .event-card {
+            border-left: 4px solid #dee2e6;
+        }
+        .event-card.active {
+            border-left-color: #28a745;
+        }
+        .event-card.inactive {
+            border-left-color: #dc3545;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <!-- Navbar -->
+    <nav th:replace="~{fragments/components :: navbar-admin}"></nav>
+
+    <div class="container-fluid mt-4">
+        <!-- Cabeçalho -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h2 class="mb-0">
+                            <i class="bi bi-calendar-event text-primary me-2"></i>
+                            Gerenciar Eventos
+                        </h2>
+                        <p class="text-muted mb-0">Administre todos os eventos do sistema</p>
+                    </div>
+                    <div>
+                        <a href="/admin/home" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>Voltar ao Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alertas -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i>
+            <span th:text="${success}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <span th:text="${error}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Cards de Estatísticas -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <div class="card stats-card border-0 shadow-sm">
+                    <div class="card-body text-center p-3">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="bg-primary bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-calendar-event fs-5 text-primary"></i>
+                            </div>
+                        </div>
+                        <h5 class="fw-bold text-primary mb-0" th:text="${totalEventos}">0</h5>
+                        <small class="text-muted">Total</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <div class="card stats-card border-0 shadow-sm">
+                    <div class="card-body text-center p-3">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="bg-success bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-check-circle fs-5 text-success"></i>
+                            </div>
+                        </div>
+                        <h5 class="fw-bold text-success mb-0" th:text="${eventosAtivos}">0</h5>
+                        <small class="text-muted">Ativos</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <div class="card stats-card border-0 shadow-sm">
+                    <div class="card-body text-center p-3">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="bg-warning bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-clock fs-5 text-warning"></i>
+                            </div>
+                        </div>
+                        <h5 class="fw-bold text-warning mb-0" th:text="${eventosFuturos}">0</h5>
+                        <small class="text-muted">Futuros</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <div class="card stats-card border-0 shadow-sm">
+                    <div class="card-body text-center p-3">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="bg-info bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-people fs-5 text-info"></i>
+                            </div>
+                        </div>
+                        <h5 class="fw-bold text-info mb-0" th:text="${totalOcupadas}">0</h5>
+                        <small class="text-muted">Inscrições</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <div class="card stats-card border-0 shadow-sm">
+                    <div class="card-body text-center p-3">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="bg-secondary bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-bar-chart fs-5 text-secondary"></i>
+                            </div>
+                        </div>
+                        <h5 class="fw-bold text-secondary mb-0" th:text="${#numbers.formatDecimal(ocupacaoMedia, 0, 1)}">0</h5>
+                        <small class="text-muted">% Ocupação</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-2 col-md-4 col-sm-6">
+                <div class="card stats-card border-0 shadow-sm">
+                    <div class="card-body text-center p-3">
+                        <div class="d-flex align-items-center justify-content-center mb-2">
+                            <div class="bg-danger bg-opacity-10 rounded-circle p-2">
+                                <i class="bi bi-archive fs-5 text-danger"></i>
+                            </div>
+                        </div>
+                        <h5 class="fw-bold text-danger mb-0" th:text="${eventosPassados}">0</h5>
+                        <small class="text-muted">Passados</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros e Busca -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <form method="get" action="/admin/eventos">
+                            <div class="row g-3 align-items-end">
+                                <div class="col-md-8">
+                                    <label for="busca" class="form-label">Buscar Eventos</label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="busca" 
+                                           name="busca" 
+                                           th:value="${busca}"
+                                           placeholder="Digite o nome do evento...">
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-primary flex-grow-1">
+                                            <i class="bi bi-search me-1"></i>Buscar
+                                        </button>
+                                        <a href="/admin/eventos" class="btn btn-outline-secondary">
+                                            <i class="bi bi-arrow-clockwise"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Eventos -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-bottom">
+                        <h5 class="mb-0">
+                            <i class="bi bi-list-ul me-2"></i>
+                            Lista de Eventos
+                            <span class="badge bg-secondary ms-2" th:text="${#lists.size(eventos)}">0</span>
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div th:if="${#lists.isEmpty(eventos)}" class="text-center py-5 text-muted">
+                            <i class="bi bi-calendar-x fs-1 mb-3"></i>
+                            <p>Nenhum evento encontrado</p>
+                            <div th:if="${busca != null and !busca.isEmpty()}">
+                                <a href="/admin/eventos" class="btn btn-outline-primary">Ver Todos os Eventos</a>
+                            </div>
+                        </div>
+                        
+                        <div th:if="${!#lists.isEmpty(eventos)}">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Evento</th>
+                                            <th>Organizador</th>
+                                            <th>Data/Local</th>
+                                            <th>Vagas</th>
+                                            <th>Status</th>
+                                            <th class="text-center">Ações</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="evento : ${eventos}" 
+                                            th:classappend="${evento.ativo} ? '' : 'table-secondary'">
+                                            <td>
+                                                <div>
+                                                    <div class="fw-bold" th:text="${evento.nome}">Nome do Evento</div>
+                                                    <div class="small text-muted" th:text="${#strings.abbreviate(evento.descricao, 80)}">Descrição</div>
+                                                    <div th:if="${evento.precoIngresso > 0}" class="small text-success">
+                                                        <i class="bi bi-currency-dollar me-1"></i>
+                                                        <span th:text="${#numbers.formatCurrency(evento.precoIngresso)}">R$ 0,00</span>
+                                                    </div>
+                                                    <div th:if="${evento.precoIngresso == 0}" class="small text-info">
+                                                        <i class="bi bi-gift me-1"></i>Gratuito
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="small">
+                                                    <div class="fw-semibold" th:text="${evento.organizador.nome}">Organizador</div>
+                                                    <div class="text-muted" th:text="${evento.organizador.email}">email</div>
+                                                    <div th:if="${evento.organizador.empresa != null}" class="text-muted">
+                                                        <i class="bi bi-building me-1"></i>
+                                                        <span th:text="${evento.organizador.empresa}">Empresa</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="small">
+                                                    <div>
+                                                        <i class="bi bi-calendar me-1"></i>
+                                                        <span th:text="${#temporals.format(evento.dataEvento, 'dd/MM/yyyy HH:mm')}">Data</span>
+                                                    </div>
+                                                    <div>
+                                                        <i class="bi bi-geo-alt me-1"></i>
+                                                        <span th:text="${evento.local}">Local</span>
+                                                    </div>
+                                                    <div class="mt-1">
+                                                        <span th:if="${evento.dataEvento.isAfter(T(java.time.LocalDateTime).now())}" 
+                                                              class="badge bg-primary">Futuro</span>
+                                                        <span th:if="${evento.dataEvento.isBefore(T(java.time.LocalDateTime).now())}" 
+                                                              class="badge bg-secondary">Passado</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="small">
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>Ocupadas:</span>
+                                                        <strong th:text="${evento.vagasOcupadas}">0</strong>
+                                                    </div>
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>Total:</span>
+                                                        <strong th:text="${evento.vagasTotais}">0</strong>
+                                                    </div>
+                                                    <div class="progress progress-thin mt-1">
+                                                        <div class="progress-bar" 
+                                                             role="progressbar" 
+                                                             th:style="'width: ' + ${evento.vagasTotais > 0 ? (evento.vagasOcupadas * 100.0 / evento.vagasTotais) : 0} + '%'"
+                                                             th:classappend="${evento.vagasOcupadas >= evento.vagasTotais} ? 'bg-danger' : 'bg-success'">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex flex-column gap-1">
+                                                    <span th:if="${evento.ativo}" class="badge bg-success">Ativo</span>
+                                                    <span th:if="${!evento.ativo}" class="badge bg-danger">Inativo</span>
+                                                    
+                                                    <span th:switch="${evento.status.name()}">
+                                                        <span th:case="'ABERTO'" class="badge bg-primary">Aberto</span>
+                                                        <span th:case="'FECHADO'" class="badge bg-warning">Fechado</span>
+                                                        <span th:case="'CANCELADO'" class="badge bg-danger">Cancelado</span>
+                                                        <span th:case="'FINALIZADO'" class="badge bg-secondary">Finalizado</span>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="btn-group-vertical" role="group">
+                                                    <!-- Editar -->
+                                                    <a th:href="@{'/admin/eventos/editar/' + ${evento.id}}"
+                                                       class="btn btn-primary btn-action btn-sm mb-1" title="Editar">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    
+                                                    <!-- Ativar/Desativar -->
+                                                    <div th:if="${evento.ativo}">
+                                                        <form th:action="@{'/admin/eventos/desativar/' + ${evento.id}}" 
+                                                              method="post" 
+                                                              style="display: inline;"
+                                                              onsubmit="return confirm('Tem certeza que deseja excluir este evento?')">
+                                                            <button type="submit" class="btn btn-danger btn-action btn-sm" title="Excluir">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                    <div th:if="${!evento.ativo}">
+                                                        <form th:action="@{'/admin/eventos/ativar/' + ${evento.id}}" 
+                                                              method="post" 
+                                                              style="display: inline;">
+                                                            <button type="submit" class="btn btn-success btn-action btn-sm" title="Reativar">
+                                                                <i class="bi bi-arrow-clockwise"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-focus no campo de busca
+        document.getElementById('busca').focus();
+        
+        // Confirmar exclusão
+        document.querySelectorAll('form[onsubmit*="confirm"]').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (this.action.includes('/desativar/')) {
+                    if (!confirm('Tem certeza que deseja excluir este evento?\nEle ficará indisponível para novas inscrições.')) {
+                        e.preventDefault();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
