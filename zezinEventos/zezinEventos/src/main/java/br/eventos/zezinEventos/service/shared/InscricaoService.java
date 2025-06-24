@@ -21,6 +21,14 @@ public class InscricaoService {
     @Autowired
     private EventoService eventoService;
     
+    // Injeção opcional para evitar dependência circular
+    private ListaEsperaService listaEsperaService;
+    
+    @Autowired(required = false)
+    public void setListaEsperaService(ListaEsperaService listaEsperaService) {
+        this.listaEsperaService = listaEsperaService;
+    }
+    
     /**
      * Inscreve um cliente em um evento
      */
@@ -54,8 +62,7 @@ public class InscricaoService {
         
         return inscricao;
     }
-    
-    /**
+      /**
      * Cancela inscrição de um cliente
      */
     @Transactional
@@ -72,6 +79,21 @@ public class InscricaoService {
         // Atualizar contador de vagas do evento
         evento.setVagasOcupadas(evento.getVagasOcupadas() - 1);
         eventoService.salvar(evento);
+        
+        // *** INTEGRAÇÃO COM LISTA DE ESPERA ***
+        // Quando uma vaga é liberada, promover próximo da fila automaticamente
+        if (listaEsperaService != null) {
+            try {
+                boolean alguemPromovido = listaEsperaService.promoverProximoDaFila(evento);
+                if (alguemPromovido) {
+                    // Log ou notificação seria implementado aqui
+                    System.out.println("Uma vaga foi liberada e alguém da lista de espera foi promovido para o evento: " + evento.getNome());
+                }
+            } catch (Exception e) {
+                // Log do erro, mas não falhar o cancelamento
+                System.err.println("Erro ao processar lista de espera: " + e.getMessage());
+            }
+        }
     }
     
     /**
