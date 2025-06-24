@@ -8,6 +8,7 @@ import java.util.List;
 @Repository
 public interface AdministradorDAO extends JpaRepository<Administrador, Long> {
     Administrador findByLogin(String login);
+    Administrador findByEmail(String email);
     
     List<Administrador> findByNomeContainingIgnoreCase(String nome);
     List<Administrador> findByAtivo(boolean ativo);
