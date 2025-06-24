@@ -101,17 +101,74 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card-footer">
-                                <form th:action="@{/cliente/inscrever/{id}(id=${evento.id})}" method="post" class="d-grid">
-                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-                                    <button type="submit" class="btn btn-success" 
-                                            th:disabled="${evento.vagasOcupadas >= evento.vagasTotais}">
-                                        <i class="bi bi-person-plus me-2"></i>
-                                        <span th:if="${evento.vagasOcupadas >= evento.vagasTotais}">Esgotado</span>
-                                        <span th:unless="${evento.vagasOcupadas >= evento.vagasTotais}">Inscrever-se</span>
-                                    </button>
-                                </form>
+                            </div>                            <div class="card-footer">
+                                <!-- Status da inscrição/lista de espera -->
+                                <div class="inscricao-status mb-2" th:data-evento-id="${evento.id}">
+                                    <div class="loading-status d-none">
+                                        <div class="text-center text-muted">
+                                            <div class="spinner-border spinner-border-sm me-2"></div>
+                                            Verificando status...
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Status: Pode inscrever -->
+                                    <div class="pode-inscrever d-none">
+                                        <form th:action="@{/cliente/inscrever/{id}(id=${evento.id})}" method="post" class="d-grid">
+                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="bi bi-person-plus me-2"></i>Inscrever-se
+                                            </button>
+                                        </form>
+                                    </div>
+                                    
+                                    <!-- Status: Evento lotado - opção de lista de espera -->
+                                    <div class="evento-lotado d-none">
+                                        <form th:action="@{/cliente/inscrever/{id}(id=${evento.id})}" method="post" class="d-grid">
+                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                            <button type="submit" class="btn btn-warning">
+                                                <i class="bi bi-list-ol me-2"></i>Entrar na Lista de Espera
+                                            </button>
+                                        </form>
+                                        <small class="text-muted mt-1">
+                                            <i class="bi bi-info-circle me-1"></i>
+                                            Evento lotado. Você será notificado se abrir uma vaga.
+                                        </small>
+                                    </div>
+                                    
+                                    <!-- Status: Na lista de espera -->
+                                    <div class="na-lista-espera d-none">
+                                        <div class="alert alert-info mb-2 py-2">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div>
+                                                    <i class="bi bi-clock me-2"></i>
+                                                    <strong>Posição na fila: <span class="posicao-fila">-</span></strong>
+                                                </div>
+                                                <small class="text-muted">Aguardando vaga</small>
+                                            </div>
+                                        </div>
+                                        <form th:action="@{/cliente/sair-lista-espera/{id}(id=${evento.id})}" method="post" class="d-grid">
+                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                            <button type="submit" class="btn btn-outline-secondary btn-sm"
+                                                    onclick="return confirm('Deseja sair da lista de espera?')">
+                                                <i class="bi bi-x-circle me-2"></i>Sair da Lista de Espera
+                                            </button>
+                                        </form>
+                                    </div>
+                                    
+                                    <!-- Status: Já inscrito -->
+                                    <div class="ja-inscrito d-none">
+                                        <button type="button" class="btn btn-secondary" disabled>
+                                            <i class="bi bi-check-circle me-2"></i>Já Inscrito
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Status: Não pode inscrever (outros motivos) -->
+                                    <div class="nao-pode-inscrever d-none">
+                                        <button type="button" class="btn btn-secondary" disabled>
+                                            <i class="bi bi-x-circle me-2"></i>Inscrição Indisponível
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -121,6 +178,103 @@
     </div>
 
     <div th:replace="~{fragments/components :: scripts}"></div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar status de cada evento
+            const eventCards = document.querySelectorAll('.inscricao-status[data-evento-id]');
+            
+            eventCards.forEach(card => {
+                const eventoId = card.getAttribute('data-evento-id');
+                verificarStatusEvento(eventoId, card);
+            });
+        });
+        
+        async function verificarStatusEvento(eventoId, cardElement) {
+            const loadingStatus = cardElement.querySelector('.loading-status');
+            loadingStatus.classList.remove('d-none');
+            
+            try {
+                // Verificar se pode se inscrever
+                const podeInscrever = await fetch(`/cliente/pode-inscrever/${eventoId}`)
+                    .then(response => response.json());
+                
+                // Verificar se está na lista de espera
+                const naListaEspera = await fetch(`/cliente/esta-na-lista-espera/${eventoId}`)
+                    .then(response => response.json());
+                
+                let posicaoFila = -1;
+                if (naListaEspera) {
+                    posicaoFila = await fetch(`/cliente/posicao-lista-espera/${eventoId}`)
+                        .then(response => response.json());
+                }
+                
+                // Determinar qual status mostrar
+                if (naListaEspera) {
+                    mostrarStatusListaEspera(cardElement, posicaoFila);
+                } else if (podeInscrever) {
+                    // Verificar se evento tem vagas (pela barra de progresso)
+                    const progressBar = cardElement.closest('.card').querySelector('.progress-bar');
+                    const isLotado = progressBar && progressBar.classList.contains('bg-danger');
+                    
+                    if (isLotado) {
+                        mostrarStatusEventoLotado(cardElement);
+                    } else {
+                        mostrarStatusPodeInscrever(cardElement);
+                    }
+                } else {
+                    // Verificar se já está inscrito ou não pode inscrever
+                    mostrarStatusNaoPodeInscrever(cardElement);
+                }
+                
+            } catch (error) {
+                console.error('Erro ao verificar status do evento:', error);
+                mostrarStatusNaoPodeInscrever(cardElement);
+            } finally {
+                loadingStatus.classList.add('d-none');
+            }
+        }
+        
+        function mostrarStatusPodeInscrever(cardElement) {
+            ocultarTodosStatus(cardElement);
+            cardElement.querySelector('.pode-inscrever').classList.remove('d-none');
+        }
+        
+        function mostrarStatusEventoLotado(cardElement) {
+            ocultarTodosStatus(cardElement);
+            cardElement.querySelector('.evento-lotado').classList.remove('d-none');
+        }
+        
+        function mostrarStatusListaEspera(cardElement, posicao) {
+            ocultarTodosStatus(cardElement);
+            const statusElement = cardElement.querySelector('.na-lista-espera');
+            statusElement.classList.remove('d-none');
+            
+            const posicaoElement = statusElement.querySelector('.posicao-fila');
+            if (posicaoElement && posicao > 0) {
+                posicaoElement.textContent = posicao;
+            }
+        }
+        
+        function mostrarStatusNaoPodeInscrever(cardElement) {
+            ocultarTodosStatus(cardElement);
+            cardElement.querySelector('.nao-pode-inscrever').classList.remove('d-none');
+        }
+        
+        function ocultarTodosStatus(cardElement) {
+            const statusElements = cardElement.querySelectorAll('.pode-inscrever, .evento-lotado, .na-lista-espera, .ja-inscrito, .nao-pode-inscrever');
+            statusElements.forEach(el => el.classList.add('d-none'));
+        }
+        
+        // Atualizar status a cada 30 segundos
+        setInterval(() => {
+            const eventCards = document.querySelectorAll('.inscricao-status[data-evento-id]');
+            eventCards.forEach(card => {
+                const eventoId = card.getAttribute('data-evento-id');
+                verificarStatusEvento(eventoId, card);
+            });
+        }, 30000);
+    </script>
 </body>
 
 </html>
