@@ -32,23 +32,21 @@ public interface OrganizadorEventoServiceInterface {
      * @param loginOrganizador Login do organizador
      * @return Evento vazio associado ao organizador
      */
-    Evento prepararNovoEvento(String loginOrganizador);
-    
-    /**
+    Evento prepararNovoEvento(String loginOrganizador);    /**
      * Salva um evento (criação ou edição).
      * 
      * @param evento Evento a ser salvo
      * @param loginOrganizador Login do organizador (para validação)
-     * @return Resultado da operação
+     * @return Evento salvo
      */
-    ResultadoOperacao salvarEvento(Evento evento, String loginOrganizador);
+    Evento salvarEvento(Evento evento, String loginOrganizador);
     
     /**
      * Busca um evento específico do organizador para edição.
      * 
      * @param eventoId ID do evento
      * @param loginOrganizador Login do organizador (para validação de propriedade)
-     * @return Evento encontrado ou null
+     * @return Evento encontrado
      */
     Evento buscarEventoParaEdicao(Long eventoId, String loginOrganizador);
     
@@ -57,40 +55,6 @@ public interface OrganizadorEventoServiceInterface {
      * 
      * @param eventoId ID do evento
      * @param loginOrganizador Login do organizador (para validação de propriedade)
-     * @return Resultado da operação
      */
-    ResultadoOperacao excluirEvento(Long eventoId, String loginOrganizador);
-    
-    /**
-     * Classe para encapsular o resultado de operações.
-     */
-    class ResultadoOperacao {
-        private boolean sucesso;
-        private String mensagem;
-        private String tipoMensagem; // "success", "error", "warning"
-        
-        public ResultadoOperacao(boolean sucesso, String mensagem, String tipoMensagem) {
-            this.sucesso = sucesso;
-            this.mensagem = mensagem;
-            this.tipoMensagem = tipoMensagem;
-        }
-        
-        // Getters
-        public boolean isSucesso() { return sucesso; }
-        public String getMensagem() { return mensagem; }
-        public String getTipoMensagem() { return tipoMensagem; }
-        
-        // Métodos estáticos para facilitar criação
-        public static ResultadoOperacao sucesso(String mensagem) {
-            return new ResultadoOperacao(true, mensagem, "success");
-        }
-        
-        public static ResultadoOperacao erro(String mensagem) {
-            return new ResultadoOperacao(false, mensagem, "error");
-        }
-        
-        public static ResultadoOperacao aviso(String mensagem) {
-            return new ResultadoOperacao(false, mensagem, "warning");
-        }
-    }
+    void excluirEvento(Long eventoId, String loginOrganizador);
 }
