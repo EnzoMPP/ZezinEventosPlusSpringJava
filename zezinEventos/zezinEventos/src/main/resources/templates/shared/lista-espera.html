@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle}">Lista de Espera</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        .lista-espera-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .evento-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .lista-espera-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .lista-espera-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .posicao-badge {
+            background: #007bff;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .cliente-info {
+            flex: 1;
+            margin-left: 15px;
+        }
+        
+        .data-entrada {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+        
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/components :: navbar}"></div>
+    
+    <div class="container mt-4">
+        
+        <!-- Alertas -->
+        <div th:if="${param.sucesso}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${param.sucesso[0] == 'ClientePromovido'} ? 'Cliente promovido com sucesso!' : 'Operação realizada com sucesso!'">Sucesso!</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        
+        <div th:if="${param.erro}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <span th:text="${param.erro[0] == 'ErroAoPromover'} ? 'Erro ao promover cliente.' : 'Erro ao carregar lista de espera.'">Erro!</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        
+        <!-- Header do Evento -->
+        <div class="evento-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-1" th:text="${evento.nome}">Nome do Evento</h2>
+                    <p class="mb-0">
+                        <i class="fas fa-calendar-alt me-2"></i>
+                        <span th:text="${#temporals.format(evento.dataEvento, 'dd/MM/yyyy HH:mm')}">Data do Evento</span>
+                        
+                        <i class="fas fa-map-marker-alt ms-3 me-2"></i>
+                        <span th:text="${evento.local}">Local</span>
+                    </p>
+                </div>
+                <div class="text-end">
+                    <div class="btn-group">
+                        <a th:href="@{/admin/eventos}" class="btn btn-light">
+                            <i class="fas fa-arrow-left me-2"></i>Voltar
+                        </a>
+                        <button type="button" class="btn btn-light" onclick="location.reload()">
+                            <i class="fas fa-sync-alt me-2"></i>Atualizar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Estatísticas -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stats-card text-center">
+                    <h3 class="text-primary" th:text="${evento.vagasTotais}">0</h3>
+                    <p class="mb-0">Vagas Totais</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card text-center">
+                    <h3 class="text-success" th:text="${evento.vagasOcupadas}">0</h3>
+                    <p class="mb-0">Vagas Ocupadas</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card text-center">
+                    <h3 class="text-warning" th:text="${evento.vagasDisponiveis}">0</h3>
+                    <p class="mb-0">Vagas Disponíveis</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card text-center">
+                    <h3 class="text-info" th:text="${totalNaFila}">0</h3>
+                    <p class="mb-0">Na Lista de Espera</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lista de Espera -->
+        <div class="lista-espera-container">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="mb-0">
+                    <i class="fas fa-list-ol me-2"></i>Lista de Espera
+                </h4>
+                
+                <!-- Botão de Promover (apenas para Admin) -->
+                <div sec:authorize="hasRole('ADMIN')" th:if="${totalNaFila > 0}">
+                    <form th:action="@{'/lista-espera/evento/' + ${evento.id} + '/promover-proximo'}" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-success btn-sm" 
+                                onclick="return confirm('Deseja promover o próximo cliente da fila?')">
+                            <i class="fas fa-arrow-up me-2"></i>Promover Próximo
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Lista vazia -->
+            <div th:if="${totalNaFila == 0}" class="empty-state">
+                <i class="fas fa-inbox fa-3x mb-3"></i>
+                <h5>Nenhum cliente na lista de espera</h5>
+                <p>Este evento não possui clientes aguardando na fila.</p>
+            </div>
+            
+            <!-- Lista com clientes -->
+            <div th:if="${totalNaFila > 0}">
+                <div th:each="item : ${listaEspera}" class="lista-espera-item d-flex align-items-center">
+                    <div class="posicao-badge" th:text="${item.posicao}">1</div>
+                    
+                    <div class="cliente-info">
+                        <h6 class="mb-1" th:text="${item.cliente.nome}">Nome do Cliente</h6>
+                        <p class="mb-1 text-muted" th:text="${item.cliente.email}">email@cliente.com</p>
+                        <div class="data-entrada">
+                            <i class="fas fa-clock me-1"></i>
+                            Entrou na fila em: 
+                            <span th:text="${#temporals.format(item.dataEntrada, 'dd/MM/yyyy HH:mm')}">data</span>
+                        </div>
+                    </div>
+                    
+                    <div class="status-info text-end">
+                        <span class="badge bg-warning" th:if="${!item.notificado}">
+                            <i class="fas fa-hourglass-half me-1"></i>Aguardando
+                        </span>
+                        <span class="badge bg-info" th:if="${item.notificado}">
+                            <i class="fas fa-bell me-1"></i>Notificado
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Auto-refresh da página a cada 30 segundos (para ver atualizações em tempo real)
+        setTimeout(function() {
+            location.reload();
+        }, 30000);
+        
+        // Confirmar ação de promover
+        function confirmarPromocao() {
+            return confirm('Tem certeza que deseja promover o próximo cliente da fila?\n\nEsta ação irá:\n1. Inscrever o cliente no evento\n2. Remover da lista de espera\n3. Reorganizar as posições');
+        }
+    </script>
+</body>
+</html>
