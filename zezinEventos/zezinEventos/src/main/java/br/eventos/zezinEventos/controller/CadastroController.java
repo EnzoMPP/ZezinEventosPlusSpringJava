@@ -2,8 +2,8 @@ package br.eventos.zezinEventos.controller;
 
 import br.eventos.zezinEventos.model.Cliente;
 import br.eventos.zezinEventos.model.Organizador;
-import br.eventos.zezinEventos.service.ClienteService;
-import br.eventos.zezinEventos.service.OrganizadorService;
+import br.eventos.zezinEventos.service.shared.ClienteService;
+import br.eventos.zezinEventos.service.shared.OrganizadorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

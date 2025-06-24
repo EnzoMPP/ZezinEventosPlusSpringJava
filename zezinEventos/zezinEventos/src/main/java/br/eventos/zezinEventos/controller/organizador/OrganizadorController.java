@@ -1,12 +1,11 @@
 package br.eventos.zezinEventos.controller;
 
 import br.eventos.zezinEventos.model.Evento;
-import br.eventos.zezinEventos.model.Inscricao;
 import br.eventos.zezinEventos.model.Organizador;
 import br.eventos.zezinEventos.model.TipoEvento;
-import br.eventos.zezinEventos.service.EventoService;
-import br.eventos.zezinEventos.service.InscricaoService;
-import br.eventos.zezinEventos.service.OrganizadorService;
+import br.eventos.zezinEventos.service.shared.EventoService;
+import br.eventos.zezinEventos.service.shared.InscricaoService;
+import br.eventos.zezinEventos.service.shared.OrganizadorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;

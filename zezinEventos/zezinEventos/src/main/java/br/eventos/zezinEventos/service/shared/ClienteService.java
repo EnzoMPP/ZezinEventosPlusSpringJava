@@ -1,4 +1,4 @@
-package br.eventos.zezinEventos.service;
+package br.eventos.zezinEventos.service.shared;
 
 import br.eventos.zezinEventos.model.Cliente;
 import br.eventos.zezinEventos.model.repository.ClienteDAO;

@@ -1,8 +1,7 @@
-package br.eventos.zezinEventos.service;
+package br.eventos.zezinEventos.service.shared;
 
 import br.eventos.zezinEventos.model.Evento;
 import br.eventos.zezinEventos.model.Organizador;
-import br.eventos.zezinEventos.model.StatusEvento;
 import br.eventos.zezinEventos.model.repository.EventoDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
