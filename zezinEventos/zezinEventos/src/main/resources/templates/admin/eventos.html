@@ -306,13 +306,18 @@
                                                         <span th:case="'FINALIZADO'" class="badge bg-secondary">Finalizado</span>
                                                     </span>
                                                 </div>
-                                            </td>
-                                            <td class="text-center">
+                                            </td>                                            <td class="text-center">
                                                 <div class="btn-group-vertical" role="group">
                                                     <!-- Editar -->
                                                     <a th:href="@{'/admin/eventos/editar/' + ${evento.id}}"
                                                        class="btn btn-primary btn-action btn-sm mb-1" title="Editar">
                                                         <i class="bi bi-pencil"></i>
+                                                    </a>
+                                                    
+                                                    <!-- Lista de Espera -->
+                                                    <a th:href="@{'/lista-espera/evento/' + ${evento.id}}"
+                                                       class="btn btn-info btn-action btn-sm mb-1" title="Lista de Espera">
+                                                        <i class="bi bi-list-ol"></i>
                                                     </a>
                                                     
                                                     <!-- Ativar/Desativar -->
