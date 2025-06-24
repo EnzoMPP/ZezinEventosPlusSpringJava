@@ -21,10 +21,13 @@ public interface EventoDAO extends JpaRepository<Evento, Long> {
     List<Evento> findByAtivoTrue();
     
     // Busca eventos por status
-    List<Evento> findByStatus(StatusEvento status);
-      // Busca eventos abertos (para inscrições) - com vagas e futuros
-    @Query("SELECT e FROM Evento e WHERE e.status = 'ABERTO' AND e.ativo = true AND e.dataEvento > CURRENT_TIMESTAMP AND e.vagasOcupadas < e.vagasTotais ORDER BY e.dataEvento ASC")
+    List<Evento> findByStatus(StatusEvento status);    // Busca eventos abertos (para inscrições) - incluindo lotados para lista de espera
+    @Query("SELECT e FROM Evento e WHERE e.status = 'ABERTO' AND e.ativo = true AND e.dataEvento > CURRENT_TIMESTAMP ORDER BY e.dataEvento ASC")
     List<Evento> findEventosAbertos();
+    
+    // Busca eventos com vagas disponíveis (não lotados)
+    @Query("SELECT e FROM Evento e WHERE e.status = 'ABERTO' AND e.ativo = true AND e.dataEvento > CURRENT_TIMESTAMP AND e.vagasOcupadas < e.vagasTotais ORDER BY e.dataEvento ASC")
+    List<Evento> findEventosComVagasDisponiveis();
     
     // Busca eventos futuros
     @Query("SELECT e FROM Evento e WHERE e.dataEvento > :agora AND e.ativo = true ORDER BY e.dataEvento")

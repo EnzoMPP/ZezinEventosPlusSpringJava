@@ -24,13 +24,18 @@ public class EventoService {
     // Lista eventos por organizador
     public List<Evento> listarPorOrganizador(Organizador organizador) {
         return eventoDAO.findByOrganizador(organizador);
-    }
-
-    /**
+    }    /**
      * Lista eventos abertos para inscrição (para clientes)
      */
     public List<Evento> listarEventosAbertos() {
         return eventoDAO.findEventosAbertos();
+    }
+    
+    /**
+     * Lista eventos com vagas disponíveis (não lotados)
+     */
+    public List<Evento> listarEventosComVagasDisponiveis() {
+        return eventoDAO.findEventosComVagasDisponiveis();
     }
 
     // Lista eventos futuros
