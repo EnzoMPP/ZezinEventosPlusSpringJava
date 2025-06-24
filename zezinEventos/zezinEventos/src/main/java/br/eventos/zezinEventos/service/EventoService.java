@@ -37,19 +37,67 @@ public class EventoService {
     // Lista eventos futuros
     public List<Evento> listarEventosFuturos() {
         return eventoDAO.findEventosFuturos(LocalDateTime.now());
-    }
-
-    // Busca evento por ID
+    }    // Busca evento por ID
     public Evento buscarPorId(Long id) {
         return eventoDAO.findById(id)
                 .orElseThrow(() -> new RuntimeException("Evento não encontrado"));
     }
 
-    // Salva ou atualiza evento
+    // Busca eventos por nome
+    public List<Evento> buscarPorNome(String nome) {
+        return eventoDAO.findByNomeContainingIgnoreCase(nome);
+    }
+
+    // Conta total de eventos
+    public long contarTodos() {
+        return eventoDAO.count();
+    }    // Salva ou atualiza evento
     @Transactional
     public Evento salvar(Evento evento) {
+        // Validações básicas
         validarEvento(evento);
+        
+        // Se for uma atualização, verificar se organizador não foi perdido
+        if (evento.getId() != null && evento.getOrganizador() == null) {
+            Evento eventoExistente = buscarPorId(evento.getId());
+            evento.setOrganizador(eventoExistente.getOrganizador());
+        }
+        
         return eventoDAO.save(evento);
+    }
+    
+    // Método específico para edições admin que preserva dados importantes
+    @Transactional
+    public Evento salvarEdicaoAdmin(Evento eventoEditado) {
+        if (eventoEditado.getId() == null) {
+            throw new RuntimeException("ID do evento é obrigatório para edição");
+        }
+        
+        // Buscar evento original
+        Evento eventoOriginal = buscarPorId(eventoEditado.getId());
+        
+        // Preservar campos que não devem ser alterados
+        eventoEditado.setOrganizador(eventoOriginal.getOrganizador());
+        eventoEditado.setDataCriacao(eventoOriginal.getDataCriacao());
+        
+        // Validar apenas campos editáveis
+        if (eventoEditado.getNome() == null || eventoEditado.getNome().trim().isEmpty()) {
+            throw new RuntimeException("Nome do evento é obrigatório");
+        }
+        
+        if (eventoEditado.getDataEvento() == null) {
+            throw new RuntimeException("Data do evento é obrigatória");
+        }
+        
+        if (eventoEditado.getVagasTotais() == null || eventoEditado.getVagasTotais() <= 0) {
+            throw new RuntimeException("Número de vagas deve ser maior que zero");
+        }
+        
+        if (eventoEditado.getLocal() == null || eventoEditado.getLocal().trim().isEmpty()) {
+            throw new RuntimeException("Local do evento é obrigatório");
+        }
+        
+        return eventoDAO.save(eventoEditado);
     }
 
     // Exclui evento
@@ -63,9 +111,7 @@ public class EventoService {
     public boolean temVagasDisponiveis(Long eventoId) {
         Evento evento = buscarPorId(eventoId);
         return evento.temVagasDisponiveis();
-    }
-
-    // Validações básicas
+    }    // Validações básicas
     private void validarEvento(Evento evento) {
         if (evento.getNome() == null || evento.getNome().trim().isEmpty()) {
             throw new RuntimeException("Nome do evento é obrigatório");
@@ -75,7 +121,9 @@ public class EventoService {
             throw new RuntimeException("Data do evento é obrigatória");
         }
         
-        if (evento.getDataEvento().isBefore(LocalDateTime.now())) {
+        // Para novos eventos, não permitir data no passado
+        // Para edições, permitir (admin pode editar eventos passados)
+        if (evento.getId() == null && evento.getDataEvento().isBefore(LocalDateTime.now())) {
             throw new RuntimeException("Data do evento não pode ser no passado");
         }
         
@@ -85,6 +133,11 @@ public class EventoService {
         
         if (evento.getLocal() == null || evento.getLocal().trim().isEmpty()) {
             throw new RuntimeException("Local do evento é obrigatório");
+        }
+        
+        // Verificar se organizador existe (apenas para novos eventos)
+        if (evento.getId() == null && evento.getOrganizador() == null) {
+            throw new RuntimeException("Organizador é obrigatório");
         }
     }
 }
