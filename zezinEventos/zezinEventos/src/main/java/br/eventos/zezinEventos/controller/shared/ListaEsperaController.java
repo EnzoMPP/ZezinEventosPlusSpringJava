@@ -1,8 +1,10 @@
 package br.eventos.zezinEventos.controller.shared;
 
+import br.eventos.zezinEventos.model.Cliente;
 import br.eventos.zezinEventos.model.Evento;
 import br.eventos.zezinEventos.model.ListaEspera;
 import br.eventos.zezinEventos.service.shared.EventoService;
+import br.eventos.zezinEventos.service.shared.InscricaoService;
 import br.eventos.zezinEventos.service.shared.ListaEsperaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,15 +22,16 @@ import java.util.List;
 @Controller
 @RequestMapping("/lista-espera")
 @PreAuthorize("hasRole('ADMIN') or hasRole('ORGANIZADOR')")
-public class ListaEsperaController {
-    
+public class ListaEsperaController {    
     private final ListaEsperaService listaEsperaService;
     private final EventoService eventoService;
+    private final InscricaoService inscricaoService;
     
     @Autowired
-    public ListaEsperaController(ListaEsperaService listaEsperaService, EventoService eventoService) {
+    public ListaEsperaController(ListaEsperaService listaEsperaService, EventoService eventoService, InscricaoService inscricaoService) {
         this.listaEsperaService = listaEsperaService;
         this.eventoService = eventoService;
+        this.inscricaoService = inscricaoService;
     }
     
     /**
@@ -81,8 +84,7 @@ public class ListaEsperaController {
             return List.of();
         }
     }
-    
-    /**
+      /**
      * Promove manualmente o próximo da fila (apenas para admin).
      * 
      * @param eventoId ID do evento
@@ -94,10 +96,17 @@ public class ListaEsperaController {
         try {
             Evento evento = eventoService.buscarPorId(eventoId);
             if (evento != null) {
-                listaEsperaService.promoverProximoDaFila(evento);
+                Cliente proximoCliente = listaEsperaService.promoverProximoDaFila(evento);
+                if (proximoCliente != null) {
+                    // Realizar a inscrição manualmente
+                    inscricaoService.inscrever(proximoCliente, evento);
+                    return "redirect:/lista-espera/evento/" + eventoId + "?sucesso=ClientePromovido";
+                } else {
+                    return "redirect:/lista-espera/evento/" + eventoId + "?erro=FilaVazia";
+                }
             }
             
-            return "redirect:/lista-espera/evento/" + eventoId + "?sucesso=ClientePromovido";
+            return "redirect:/lista-espera/evento/" + eventoId + "?erro=EventoNaoEncontrado";
             
         } catch (Exception e) {
             return "redirect:/lista-espera/evento/" + eventoId + "?erro=ErroAoPromover";

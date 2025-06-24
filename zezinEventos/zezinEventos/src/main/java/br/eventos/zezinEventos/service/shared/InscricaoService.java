@@ -61,8 +61,7 @@ public class InscricaoService {
         eventoService.salvar(evento);
         
         return inscricao;
-    }
-      /**
+    }    /**
      * Cancela inscrição de um cliente
      */
     @Transactional
@@ -84,10 +83,11 @@ public class InscricaoService {
         // Quando uma vaga é liberada, promover próximo da fila automaticamente
         if (listaEsperaService != null) {
             try {
-                boolean alguemPromovido = listaEsperaService.promoverProximoDaFila(evento);
-                if (alguemPromovido) {
-                    // Log ou notificação seria implementado aqui
-                    System.out.println("Uma vaga foi liberada e alguém da lista de espera foi promovido para o evento: " + evento.getNome());
+                Cliente proximoCliente = listaEsperaService.obterProximoDaFila(evento);
+                if (proximoCliente != null) {
+                    // Inscrever automaticamente o próximo da fila
+                    inscrever(proximoCliente, evento);
+                    System.out.println("Cliente " + proximoCliente.getNome() + " foi promovido da lista de espera para o evento: " + evento.getNome());
                 }
             } catch (Exception e) {
                 // Log do erro, mas não falhar o cancelamento

@@ -22,15 +22,12 @@ import java.util.Optional;
 public class ListaEsperaService {
     
     private final ListaEsperaDAO listaEsperaDAO;
-    private final InscricaoService inscricaoService;
     
     @Autowired
-    public ListaEsperaService(ListaEsperaDAO listaEsperaDAO, InscricaoService inscricaoService) {
+    public ListaEsperaService(ListaEsperaDAO listaEsperaDAO) {
         this.listaEsperaDAO = listaEsperaDAO;
-        this.inscricaoService = inscricaoService;
     }
-    
-    /**
+      /**
      * Adiciona um cliente à lista de espera de um evento.
      * 
      * @param cliente Cliente a ser adicionado
@@ -44,11 +41,6 @@ public class ListaEsperaService {
         Optional<ListaEspera> jaExiste = listaEsperaDAO.findByEventoAndClienteAndAtivoTrue(evento, cliente);
         if (jaExiste.isPresent()) {
             throw new RuntimeException("Você já está na lista de espera deste evento!");
-        }
-        
-        // Verificar se cliente já está inscrito no evento
-        if (inscricaoService.jaEstaInscrito(cliente, evento)) {
-            throw new RuntimeException("Você já está inscrito neste evento!");
         }
         
         // Calcular próxima posição na fila
@@ -80,42 +72,44 @@ public class ListaEsperaService {
         }
         return false;
     }
-    
-    /**
-     * Promove o próximo cliente da fila para participante efetivo.
-     * Chamado automaticamente quando uma vaga é liberada.
+      /**
+     * Obtém o próximo cliente da fila para ser promovido.
+     * NÃO realiza a inscrição - apenas retorna o cliente e remove da fila.
      * 
      * @param evento Evento que teve vaga liberada
-     * @return true se alguém foi promovido da fila
+     * @return Cliente a ser promovido ou null se fila vazia
      */
     @Transactional
-    public boolean promoverProximoDaFila(Evento evento) {
+    public Cliente obterProximoDaFila(Evento evento) {
         Optional<ListaEspera> proximoOpt = listaEsperaDAO.findProximoDaFila(evento);
         
         if (proximoOpt.isPresent()) {
             ListaEspera proximo = proximoOpt.get();
             
-            try {
-                // Inscrever automaticamente o próximo da fila
-                inscricaoService.inscrever(proximo.getCliente(), evento);
-                
-                // Marcar como processado (inativo)
-                proximo.setAtivo(false);
-                proximo.setNotificado(true);
-                listaEsperaDAO.save(proximo);
-                
-                // Reorganizar posições
-                reorganizarFila(evento);
-                
-                return true;
-                
-            } catch (Exception e) {
-                // Se não conseguir inscrever, manter na fila
-                return false;
-            }
+            // Marcar como processado (inativo)
+            proximo.setAtivo(false);
+            proximo.setNotificado(true);
+            listaEsperaDAO.save(proximo);
+            
+            // Reorganizar posições
+            reorganizarFila(evento);
+            
+            return proximo.getCliente();
         }
         
-        return false;
+        return null;
+    }
+    
+    /**
+     * Promove manualmente o próximo cliente da fila (usado pelo admin).
+     * Este método mantém a dependência para uso manual do admin.
+     * 
+     * @param evento Evento que teve vaga liberada
+     * @return Cliente promovido ou null se fila vazia
+     */
+    @Transactional
+    public Cliente promoverProximoDaFila(Evento evento) {
+        return obterProximoDaFila(evento);
     }
       /**
      * Verifica se um cliente está na lista de espera de um evento.
