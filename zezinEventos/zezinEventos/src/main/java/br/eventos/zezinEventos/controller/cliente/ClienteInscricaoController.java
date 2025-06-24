@@ -156,6 +156,93 @@ public class ClienteInscricaoController {
                 "Erro inesperado ao cancelar inscrição: " + e.getMessage());
             return "redirect:/cliente/eventos";
         }
+    }    /**
+     * Processa a saída do cliente da lista de espera.
+     * 
+     * @param eventoId ID do evento
+     * @param authentication Dados de autenticação do usuário
+     * @param redirectAttributes Atributos para redirect
+     * @return Redirecionamento
+     */
+    @PostMapping("/sair-lista-espera/{eventoId}")
+    public String sairDaListaEspera(@PathVariable Long eventoId,
+                                   Authentication authentication,
+                                   RedirectAttributes redirectAttributes) {
+        try {
+            String loginCliente = authentication.getName();
+            
+            // Cast para acessar os métodos adicionais
+            if (inscricaoService instanceof br.eventos.zezinEventos.service.cliente.ClienteInscricaoService) {
+                br.eventos.zezinEventos.service.cliente.ClienteInscricaoService service = 
+                    (br.eventos.zezinEventos.service.cliente.ClienteInscricaoService) inscricaoService;
+                
+                ResultadoInscricao resultado = service.sairDaListaEspera(loginCliente, eventoId);
+                redirectAttributes.addFlashAttribute(resultado.getTipoMensagem(), resultado.getMensagem());
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Erro interno do sistema.");
+            }
+            
+            return "redirect:/cliente/eventos/disponiveis";
+            
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", 
+                "Erro inesperado ao sair da lista de espera: " + e.getMessage());
+            return "redirect:/cliente/eventos/disponiveis";
+        }
+    }
+    
+    /**
+     * Endpoint AJAX para consultar posição na lista de espera.
+     * 
+     * @param eventoId ID do evento
+     * @param authentication Dados de autenticação
+     * @return Posição na fila (-1 se não estiver na fila)
+     */
+    @GetMapping("/posicao-lista-espera/{eventoId}")
+    @ResponseBody
+    public int obterPosicaoListaEspera(@PathVariable Long eventoId, 
+                                      Authentication authentication) {
+        try {
+            String loginCliente = authentication.getName();
+            
+            if (inscricaoService instanceof br.eventos.zezinEventos.service.cliente.ClienteInscricaoService) {
+                br.eventos.zezinEventos.service.cliente.ClienteInscricaoService service = 
+                    (br.eventos.zezinEventos.service.cliente.ClienteInscricaoService) inscricaoService;
+                
+                return service.obterPosicaoNaListaEspera(loginCliente, eventoId);
+            }
+            
+            return -1;
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+    
+    /**
+     * Endpoint AJAX para verificar se está na lista de espera.
+     * 
+     * @param eventoId ID do evento
+     * @param authentication Dados de autenticação
+     * @return true se estiver na lista de espera
+     */
+    @GetMapping("/esta-na-lista-espera/{eventoId}")
+    @ResponseBody
+    public boolean estaListaEspera(@PathVariable Long eventoId, 
+                                  Authentication authentication) {
+        try {
+            String loginCliente = authentication.getName();
+            
+            if (inscricaoService instanceof br.eventos.zezinEventos.service.cliente.ClienteInscricaoService) {
+                br.eventos.zezinEventos.service.cliente.ClienteInscricaoService service = 
+                    (br.eventos.zezinEventos.service.cliente.ClienteInscricaoService) inscricaoService;
+                
+                return service.clienteEstaNaListaEspera(loginCliente, eventoId);
+            }
+            
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
     }
       /**
      * Endpoint AJAX para verificar se o cliente pode se inscrever em um evento.
