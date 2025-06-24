@@ -11,11 +11,10 @@
     <!-- Conteúdo da home do cliente -->
     <div class="container mt-4">
         <div class="row">
-            <div class="col-12">
-                <div class="alert alert-success">
+            <div class="col-12">                <div class="alert alert-success">
                     <i class="bi bi-check-circle me-2"></i>
                     <strong>Bem-vindo, <span
-                            th:text="${cliente != null ? cliente.nome : 'Cliente'}">Cliente</span>!</strong>
+                            th:text="${cliente != null ? cliente.nomeCliente : 'Cliente'}">Cliente</span>!</strong>
                     Esta é sua área pessoal no SIGEI.
                 </div>
             </div>
@@ -123,15 +122,13 @@
                             <i class="bi bi-person-badge me-2"></i>Informações da Conta
                         </h5>
                     </div>
-                    <div class="card-body">
-                        <div class="row" th:if="${cliente}">
+                    <div class="card-body">                        <div class="row" th:if="${cliente}">
                             <div class="col-md-4">
                                 <strong>Nome:</strong><br>
-                                <span th:text="${cliente.nome}">Nome do Cliente</span>
-                            </div>
-                            <div class="col-md-4">
+                                <span th:text="${cliente.nomeCliente}">Nome do Cliente</span>
+                            </div>                            <div class="col-md-4">
                                 <strong>Email:</strong><br>
-                                <span th:text="${cliente.email}">email@cliente.com</span>
+                                <span th:text="${cliente.emailCliente}">email@cliente.com</span>
                             </div>
                             <div class="col-md-4">
                                 <strong>Telefone:</strong><br>

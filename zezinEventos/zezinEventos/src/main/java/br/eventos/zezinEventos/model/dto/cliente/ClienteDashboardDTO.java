@@ -13,14 +13,14 @@ public class ClienteDashboardDTO {
     
     private Long clienteId;
     private String nomeCliente;
+    private String emailCliente;
     private Long totalEventosInscritos;  
     private Long eventosProximos;
     private Long eventosFinalizados;
     
     // Construtores
     public ClienteDashboardDTO() {}
-    
-    /**
+      /**
      * Construtor que cria um DTO com as estatísticas do cliente.
      */
     public ClienteDashboardDTO(Cliente cliente, Long totalEventosInscritos, 
@@ -28,6 +28,7 @@ public class ClienteDashboardDTO {
         if (cliente != null) {
             this.clienteId = cliente.getId();
             this.nomeCliente = cliente.getNome();
+            this.emailCliente = cliente.getEmail();
         }
         this.totalEventosInscritos = totalEventosInscritos;
         this.eventosProximos = eventosProximos;
@@ -46,9 +47,16 @@ public class ClienteDashboardDTO {
     public String getNomeCliente() {
         return nomeCliente;
     }
-    
-    public void setNomeCliente(String nomeCliente) {
+      public void setNomeCliente(String nomeCliente) {
         this.nomeCliente = nomeCliente;
+    }
+    
+    public String getEmailCliente() {
+        return emailCliente;
+    }
+    
+    public void setEmailCliente(String emailCliente) {
+        this.emailCliente = emailCliente;
     }
     
     public Long getTotalEventosInscritos() {
