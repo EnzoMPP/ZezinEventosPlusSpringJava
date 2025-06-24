@@ -194,10 +194,39 @@
                         Usuários inativos não podem fazer login no sistema
                     </div>
                 </div>
+            </div>
+            
+            <!-- Alteração de Senha -->
+            <div class="form-section">
+                <h4 class="section-title">
+                    <i class="bi bi-key me-2"></i>Alteração de Senha
+                </h4>
                 
-                <div class="alert alert-info mt-3">
+                <div class="alert alert-info mb-3">
                     <h6><i class="bi bi-info-circle me-2"></i>Alteração de Senha:</h6>
-                    <p class="mb-0">Para alterar a senha do usuário, entre em contato com o administrador do sistema ou implemente uma funcionalidade específica para redefinição de senhas.</p>
+                    <p class="mb-0">Deixe os campos em branco para manter a senha atual. Preencha apenas se desejar alterar a senha do usuário.</p>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="senha" class="form-label">Nova Senha</label>
+                        <input type="password" 
+                               class="form-control" 
+                               id="senha" 
+                               name="senha"
+                               placeholder="Digite a nova senha (opcional)">
+                        <div class="form-text">Mínimo 6 caracteres</div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="confirmarSenha" class="form-label">Confirmar Nova Senha</label>
+                        <input type="password" 
+                               class="form-control" 
+                               id="confirmarSenha" 
+                               name="confirmarSenha"
+                               placeholder="Confirme a nova senha">
+                        <div class="form-text">Deve ser igual à nova senha</div>
+                    </div>
                 </div>
             </div>
 
@@ -212,9 +241,7 @@
                 </button>
             </div>
         </form>
-    </div>
-
-    <!-- Scripts -->
+    </div>    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Formatação de telefone
@@ -248,6 +275,42 @@
                 e.target.value = value;
             });
         }
+        
+        // Validação de senhas
+        const senhaField = document.getElementById('senha');
+        const confirmarSenhaField = document.getElementById('confirmarSenha');
+        
+        function validarSenhas() {
+            const senha = senhaField.value;
+            const confirmarSenha = confirmarSenhaField.value;
+            
+            if (senha && senha.length < 6) {
+                senhaField.setCustomValidity('A senha deve ter pelo menos 6 caracteres');
+            } else {
+                senhaField.setCustomValidity('');
+            }
+            
+            if (senha && confirmarSenha && senha !== confirmarSenha) {
+                confirmarSenhaField.setCustomValidity('As senhas não conferem');
+            } else {
+                confirmarSenhaField.setCustomValidity('');
+            }
+        }
+        
+        senhaField.addEventListener('input', validarSenhas);
+        confirmarSenhaField.addEventListener('input', validarSenhas);
+        
+        // Validação no envio do formulário
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const senha = senhaField.value;
+            const confirmarSenha = confirmarSenhaField.value;
+            
+            if (senha && (!confirmarSenha || senha !== confirmarSenha)) {
+                e.preventDefault();
+                alert('Por favor, confirme a nova senha corretamente.');
+                confirmarSenhaField.focus();
+            }
+        });
     </script>
 </body>
 </html>

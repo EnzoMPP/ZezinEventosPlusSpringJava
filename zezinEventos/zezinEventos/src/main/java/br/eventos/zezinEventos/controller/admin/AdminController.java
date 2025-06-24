@@ -12,6 +12,7 @@ import br.eventos.zezinEventos.service.OrganizadorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -34,12 +35,14 @@ public class AdminController {    @Autowired
     
     @Autowired
     private OrganizadorService organizadorService;
-    
-    @Autowired
+      @Autowired
     private AdministradorService administradorService;
     
     @Autowired
     private InscricaoService inscricaoService;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/home")
     public String adminHome(Model model) {
@@ -74,9 +77,9 @@ public class AdminController {    @Autowired
                 inscricaoService.contarInscricoesPorEvento(e2)
             ))
             .orElse(null);
-        
-        // Eventos recentes (últimos 5)
+          // Eventos recentes (últimos 5)
         List<Evento> eventosRecentes = todosEventos.stream()
+            .filter(e -> e.getDataCriacao() != null)
             .sorted((e1, e2) -> e2.getDataCriacao().compareTo(e1.getDataCriacao()))
             .limit(5)
             .toList();
@@ -248,12 +251,33 @@ public class AdminController {    @Autowired
             redirectAttributes.addFlashAttribute("error", "Erro ao carregar usuário: " + e.getMessage());
             return "redirect:/admin/usuarios";
         }
-    }
-      @PostMapping("/usuarios/editar/CLIENTE/{id}")
+    }    @PostMapping("/usuarios/editar/CLIENTE/{id}")
     public String salvarEdicaoCliente(@PathVariable Long id,
                                      @ModelAttribute("usuario") Cliente cliente,
+                                     @RequestParam(value = "senha", required = false) String novaSenha,
+                                     @RequestParam(value = "confirmarSenha", required = false) String confirmarSenha,
                                      RedirectAttributes redirectAttributes) {
         try {
+            // Buscar cliente existente para preservar senha
+            Cliente clienteExistente = clienteService.buscarPorId(id);
+            if (clienteExistente == null) {
+                redirectAttributes.addFlashAttribute("error", "Cliente não encontrado.");
+                return "redirect:/admin/usuarios";
+            }
+            
+            // Validar confirmação de senha se uma nova senha foi fornecida
+            if (novaSenha != null && !novaSenha.trim().isEmpty()) {
+                if (confirmarSenha == null || !novaSenha.equals(confirmarSenha)) {
+                    redirectAttributes.addFlashAttribute("error", "Senha e confirmação de senha não conferem.");
+                    return "redirect:/admin/usuarios/editar/CLIENTE/" + id;
+                }
+                // Criptografar a nova senha
+                cliente.setSenha(passwordEncoder.encode(novaSenha));
+            } else {
+                // Manter senha existente
+                cliente.setSenha(clienteExistente.getSenha());
+            }
+            
             cliente.setId(id);
             clienteService.salvar(cliente);
             redirectAttributes.addFlashAttribute("success", "Cliente editado com sucesso!");
@@ -263,12 +287,33 @@ public class AdminController {    @Autowired
         
         return "redirect:/admin/usuarios";
     }
-    
-    @PostMapping("/usuarios/editar/ORGANIZADOR/{id}")
+      @PostMapping("/usuarios/editar/ORGANIZADOR/{id}")
     public String salvarEdicaoOrganizador(@PathVariable Long id,
                                          @ModelAttribute("usuario") Organizador organizador,
+                                         @RequestParam(required = false) String senha,
+                                         @RequestParam(required = false) String confirmarSenha,
                                          RedirectAttributes redirectAttributes) {
         try {
+            // Buscar organizador existente para preservar dados
+            Organizador organizadorExistente = organizadorService.buscarPorId(id);
+            if (organizadorExistente == null) {
+                redirectAttributes.addFlashAttribute("error", "Organizador não encontrado.");
+                return "redirect:/admin/usuarios";
+            }
+            
+            // Validar alteração de senha se foi fornecida
+            if (senha != null && !senha.trim().isEmpty()) {
+                if (confirmarSenha == null || !senha.equals(confirmarSenha)) {
+                    redirectAttributes.addFlashAttribute("error", "Senha e confirmação de senha não conferem.");
+                    return "redirect:/admin/usuarios/editar/ORGANIZADOR/" + id;
+                }
+                // Criptografar a nova senha
+                organizador.setSenha(passwordEncoder.encode(senha));
+            } else {
+                // Preservar senha existente se não foi alterada
+                organizador.setSenha(organizadorExistente.getSenha());
+            }
+            
             organizador.setId(id);
             organizadorService.salvar(organizador);
             redirectAttributes.addFlashAttribute("success", "Organizador editado com sucesso!");
@@ -278,12 +323,33 @@ public class AdminController {    @Autowired
         
         return "redirect:/admin/usuarios";
     }
-    
-    @PostMapping("/usuarios/editar/ADMIN/{id}")
+      @PostMapping("/usuarios/editar/ADMIN/{id}")
     public String salvarEdicaoAdmin(@PathVariable Long id,
                                    @ModelAttribute("usuario") Administrador administrador,
+                                   @RequestParam(required = false) String senha,
+                                   @RequestParam(required = false) String confirmarSenha,
                                    RedirectAttributes redirectAttributes) {
         try {
+            // Buscar administrador existente para preservar dados
+            Administrador administradorExistente = administradorService.buscarPorId(id);
+            if (administradorExistente == null) {
+                redirectAttributes.addFlashAttribute("error", "Administrador não encontrado.");
+                return "redirect:/admin/usuarios";
+            }
+            
+            // Validar alteração de senha se foi fornecida
+            if (senha != null && !senha.trim().isEmpty()) {
+                if (confirmarSenha == null || !senha.equals(confirmarSenha)) {
+                    redirectAttributes.addFlashAttribute("error", "Senha e confirmação de senha não conferem.");
+                    return "redirect:/admin/usuarios/editar/ADMIN/" + id;
+                }
+                // Criptografar a nova senha
+                administrador.setSenha(passwordEncoder.encode(senha));
+            } else {
+                // Preservar senha existente se não foi alterada
+                administrador.setSenha(administradorExistente.getSenha());
+            }
+            
             administrador.setId(id);
             administradorService.salvar(administrador);
             redirectAttributes.addFlashAttribute("success", "Administrador editado com sucesso!");
@@ -528,9 +594,9 @@ public class AdminController {    @Autowired
                 eventosPorTipo.put(tipo, eventosPorTipo.getOrDefault(tipo, 0L) + 1);
             }
         }
-        
-        // === EVENTOS RECENTES (ÚLTIMOS 10) ===
+          // === EVENTOS RECENTES (ÚLTIMOS 10) ===
         List<Evento> eventosRecentes = todosEventos.stream()
+            .filter(e -> e.getDataCriacao() != null)
             .sorted((e1, e2) -> e2.getDataCriacao().compareTo(e1.getDataCriacao()))
             .limit(10)
             .toList();
