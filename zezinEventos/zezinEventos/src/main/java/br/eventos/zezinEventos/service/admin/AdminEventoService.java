@@ -1,7 +1,7 @@
 package br.eventos.zezinEventos.service.admin;
 
 import br.eventos.zezinEventos.model.Evento;
-import br.eventos.zezinEventos.model.dto.EventosListaDTO;
+import br.eventos.zezinEventos.model.dto.admin.EventosListaDTO;
 import br.eventos.zezinEventos.service.interfaces.admin.EventoServiceInterface;
 import br.eventos.zezinEventos.service.shared.EventoService;
 import org.springframework.beans.factory.annotation.Autowired;

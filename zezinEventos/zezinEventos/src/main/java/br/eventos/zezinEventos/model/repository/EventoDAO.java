@@ -2,7 +2,7 @@ package br.eventos.zezinEventos.model.repository;
 
 import br.eventos.zezinEventos.model.Evento;
 import br.eventos.zezinEventos.model.Organizador;
-import br.eventos.zezinEventos.model.StatusEvento;
+import br.eventos.zezinEventos.model.enums.StatusEvento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

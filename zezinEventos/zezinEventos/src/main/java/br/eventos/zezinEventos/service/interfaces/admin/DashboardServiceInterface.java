@@ -1,6 +1,6 @@
 package br.eventos.zezinEventos.service.interfaces.admin;
 
-import br.eventos.zezinEventos.model.dto.DashboardDTO;
+import br.eventos.zezinEventos.model.dto.admin.DashboardDTO;
 
 /**
  * Interface para o serviço de Dashboard Administrativo

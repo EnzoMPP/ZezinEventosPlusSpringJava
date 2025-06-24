@@ -1,4 +1,4 @@
-package br.eventos.zezinEventos.model.dto;
+package br.eventos.zezinEventos.model.dto.admin;
 
 import br.eventos.zezinEventos.model.Evento;
 import java.util.List;

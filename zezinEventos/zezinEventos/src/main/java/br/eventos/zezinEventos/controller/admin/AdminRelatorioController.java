@@ -1,6 +1,6 @@
 package br.eventos.zezinEventos.controller.admin;
 
-import br.eventos.zezinEventos.model.dto.RelatorioCompletoDTO;
+import br.eventos.zezinEventos.model.dto.admin.RelatorioCompletoDTO;
 import br.eventos.zezinEventos.service.interfaces.admin.RelatorioServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

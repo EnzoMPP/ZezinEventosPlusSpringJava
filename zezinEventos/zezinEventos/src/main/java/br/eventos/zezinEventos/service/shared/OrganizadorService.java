@@ -87,4 +87,14 @@ public class OrganizadorService {
     public void excluir(Long id) {
         repo.deleteById(id);
     }
+    
+    // Verifica se existe organizador com o email informado
+    public boolean existePorEmail(String email) {
+        return repo.existsByEmail(email);
+    }
+    
+    // Verifica se existe organizador com o CNPJ informado
+    public boolean existePorCnpj(String cnpj) {
+        return repo.existsByCnpj(cnpj);
+    }
 }

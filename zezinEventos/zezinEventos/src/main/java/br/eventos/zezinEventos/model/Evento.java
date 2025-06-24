@@ -1,5 +1,7 @@
 package br.eventos.zezinEventos.model;
 
+import br.eventos.zezinEventos.model.enums.StatusEvento;
+import br.eventos.zezinEventos.model.enums.TipoEvento;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.*;

@@ -1,8 +1,8 @@
-package br.eventos.zezinEventos.controller;
+package br.eventos.zezinEventos.controller.organizador;
 
 import br.eventos.zezinEventos.model.Evento;
 import br.eventos.zezinEventos.model.Organizador;
-import br.eventos.zezinEventos.model.TipoEvento;
+import br.eventos.zezinEventos.model.enums.TipoEvento;
 import br.eventos.zezinEventos.service.shared.EventoService;
 import br.eventos.zezinEventos.service.shared.InscricaoService;
 import br.eventos.zezinEventos.service.shared.OrganizadorService;

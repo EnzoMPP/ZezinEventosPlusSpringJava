@@ -3,7 +3,7 @@ package br.eventos.zezinEventos.controller.admin;
 import br.eventos.zezinEventos.model.Administrador;
 import br.eventos.zezinEventos.model.Cliente;
 import br.eventos.zezinEventos.model.Organizador;
-import br.eventos.zezinEventos.model.dto.UsuariosListaDTO;
+import br.eventos.zezinEventos.model.dto.admin.UsuariosListaDTO;
 import br.eventos.zezinEventos.service.interfaces.admin.UsuarioServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

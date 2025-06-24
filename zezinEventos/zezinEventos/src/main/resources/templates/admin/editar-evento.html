@@ -87,8 +87,7 @@
                     <div class="col-md-4 mb-3">
                         <label for="tipo" class="form-label">Tipo <span class="required">*</span></label>
                         <select class="form-select" id="tipo" th:field="*{tipo}" required>
-                            <option value="">Selecione o tipo</option>
-                            <option th:each="tipoOpt : ${T(br.eventos.zezinEventos.model.TipoEvento).values()}" 
+                            <option value="">Selecione o tipo</option>                            <option th:each="tipoOpt : ${T(br.eventos.zezinEventos.model.enums.TipoEvento).values()}" 
                                     th:value="${tipoOpt}" 
                                     th:text="${tipoOpt.name()}"
                                     th:selected="${tipoOpt == evento.tipo}">Tipo</option>
@@ -204,8 +203,7 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="status" class="form-label">Status do Evento</label>
-                        <select class="form-select" id="status" th:field="*{status}">
-                            <option th:each="statusOpt : ${T(br.eventos.zezinEventos.model.StatusEvento).values()}" 
+                        <select class="form-select" id="status" th:field="*{status}">                            <option th:each="statusOpt : ${T(br.eventos.zezinEventos.model.enums.StatusEvento).values()}" 
                                     th:value="${statusOpt}" 
                                     th:text="${statusOpt.name()}"
                                     th:selected="${statusOpt == evento.status}">Status</option>

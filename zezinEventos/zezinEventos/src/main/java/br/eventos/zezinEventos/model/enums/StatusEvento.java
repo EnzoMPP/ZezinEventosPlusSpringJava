@@ -1,4 +1,4 @@
-package br.eventos.zezinEventos.model;
+package br.eventos.zezinEventos.model.enums;
 
 public enum StatusEvento {
     ABERTO,

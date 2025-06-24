@@ -1,6 +1,6 @@
 package br.eventos.zezinEventos.service.interfaces.admin;
 
-import br.eventos.zezinEventos.model.dto.RelatorioCompletoDTO;
+import br.eventos.zezinEventos.model.dto.admin.RelatorioCompletoDTO;
 
 /**
  * Interface para service de relatórios administrativos

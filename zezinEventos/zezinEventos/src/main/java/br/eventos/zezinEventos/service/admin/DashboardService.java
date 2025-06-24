@@ -1,6 +1,6 @@
 package br.eventos.zezinEventos.service.admin;
 
-import br.eventos.zezinEventos.model.dto.DashboardDTO;
+import br.eventos.zezinEventos.model.dto.admin.DashboardDTO;
 import br.eventos.zezinEventos.model.Evento;
 import br.eventos.zezinEventos.service.interfaces.admin.DashboardServiceInterface;
 import br.eventos.zezinEventos.service.shared.EventoService;

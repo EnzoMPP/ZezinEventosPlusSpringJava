@@ -1,6 +1,6 @@
 package br.eventos.zezinEventos.controller.admin;
 
-import br.eventos.zezinEventos.model.dto.DashboardDTO;
+import br.eventos.zezinEventos.model.dto.admin.DashboardDTO;
 import br.eventos.zezinEventos.service.admin.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;

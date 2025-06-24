@@ -1,7 +1,7 @@
 package br.eventos.zezinEventos.service.interfaces.admin;
 
 import br.eventos.zezinEventos.model.Administrador;
-import br.eventos.zezinEventos.model.dto.UsuariosListaDTO;
+import br.eventos.zezinEventos.model.dto.admin.UsuariosListaDTO;
 
 /**
  * Interface para service de gerenciamento de usuários administrativos

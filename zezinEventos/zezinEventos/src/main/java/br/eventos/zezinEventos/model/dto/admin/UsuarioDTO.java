@@ -1,6 +1,4 @@
-package br.eventos.zezinEventos.model.dto;
-
-import java.util.List;
+package br.eventos.zezinEventos.model.dto.admin;
 
 /**
  * DTO para transportar dados de usuários do sistema

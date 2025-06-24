@@ -112,4 +112,14 @@ public class ClienteService {
     public long contarTodos() {
         return clienteDAO.count();
     }
+    
+    // Verifica se existe cliente com o email informado
+    public boolean existePorEmail(String email) {
+        return clienteDAO.existsByEmail(email);
+    }
+    
+    // Verifica se existe cliente com o CPF informado
+    public boolean existePorCpf(String cpf) {
+        return clienteDAO.existsByCpf(cpf);
+    }
 }
