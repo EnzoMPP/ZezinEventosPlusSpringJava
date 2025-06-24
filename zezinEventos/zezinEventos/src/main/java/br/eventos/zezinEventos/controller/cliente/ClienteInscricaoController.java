@@ -59,16 +59,41 @@ public class ClienteInscricaoController {
      * @param model Modelo para a view
      * @param authentication Dados de autenticação do usuário
      * @return Nome da view
-     */
-    @GetMapping("/historico")
+     */    @GetMapping("/historico")
     public String exibirHistorico(Model model, Authentication authentication) {
         try {
             String loginCliente = authentication.getName();
             ClienteInscricoesDTO inscricoesDTO = inscricaoService.obterHistoricoCompleto(loginCliente);
             
+            // Calcular eventos próximos e finalizados
+            long eventosProximos = 0;
+            long eventosFinalizados = 0;
+            
+            if (inscricoesDTO != null && inscricoesDTO.getHistoricoInscricoes() != null) {
+                java.time.LocalDateTime agora = java.time.LocalDateTime.now();
+                
+                for (Object inscricao : inscricoesDTO.getHistoricoInscricoes()) {
+                    try {
+                        // Assumindo que é um objeto Inscricao com getEvento().getDataEvento()
+                        br.eventos.zezinEventos.model.Inscricao insc = (br.eventos.zezinEventos.model.Inscricao) inscricao;
+                        if (insc.getEvento() != null && insc.getEvento().getDataEvento() != null) {
+                            if (insc.getEvento().getDataEvento().isAfter(agora)) {
+                                eventosProximos++;
+                            } else {
+                                eventosFinalizados++;
+                            }
+                        }
+                    } catch (Exception ex) {
+                        // Se houver erro de cast, ignora e continua
+                    }
+                }
+            }
+            
             model.addAttribute("pageTitle", "Histórico de Eventos");
             model.addAttribute("inscricoesDTO", inscricoesDTO);
             model.addAttribute("inscricoes", inscricoesDTO.getHistoricoInscricoes());
+            model.addAttribute("eventosProximos", eventosProximos);
+            model.addAttribute("eventosFinalizados", eventosFinalizados);
             
             return "cliente/historico";
             
@@ -132,8 +157,7 @@ public class ClienteInscricaoController {
             return "redirect:/cliente/eventos";
         }
     }
-    
-    /**
+      /**
      * Endpoint AJAX para verificar se o cliente pode se inscrever em um evento.
      * 
      * @param eventoId ID do evento
@@ -150,5 +174,13 @@ public class ClienteInscricaoController {
         } catch (Exception e) {
             return false; // Em caso de erro, considerar que não pode se inscrever
         }
+    }
+    
+    /**
+     * Redirect para compatibilidade com links antigos.
+     */
+    @GetMapping("/eventos-disponiveis")
+    public String eventosDisponiveisRedirect() {
+        return "redirect:/cliente/eventos/disponiveis";
     }
 }

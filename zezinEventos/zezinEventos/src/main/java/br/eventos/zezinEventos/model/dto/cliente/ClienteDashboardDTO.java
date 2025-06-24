@@ -10,25 +10,28 @@ import br.eventos.zezinEventos.model.Cliente;
  * da entidade Cliente e permitindo controle sobre quais dados são transferidos.
  */
 public class ClienteDashboardDTO {
-    
-    private Long clienteId;
+      private Long clienteId;
     private String nomeCliente;
     private String emailCliente;
+    private String telefoneCliente;
+    private String cpfCliente;
+    private String dataNascCliente;
     private Long totalEventosInscritos;  
     private Long eventosProximos;
     private Long eventosFinalizados;
     
     // Construtores
-    public ClienteDashboardDTO() {}
-      /**
+    public ClienteDashboardDTO() {}    /**
      * Construtor que cria um DTO com as estatísticas do cliente.
      */
     public ClienteDashboardDTO(Cliente cliente, Long totalEventosInscritos, 
-                              Long eventosProximos, Long eventosFinalizados) {
-        if (cliente != null) {
+                              Long eventosProximos, Long eventosFinalizados) {        if (cliente != null) {
             this.clienteId = cliente.getId();
             this.nomeCliente = cliente.getNome();
             this.emailCliente = cliente.getEmail();
+            this.telefoneCliente = cliente.getTelefone();
+            this.cpfCliente = cliente.getCpf();
+            this.dataNascCliente = cliente.getDataNasc() != null ? cliente.getDataNasc().toString() : null;
         }
         this.totalEventosInscritos = totalEventosInscritos;
         this.eventosProximos = eventosProximos;
@@ -54,9 +57,31 @@ public class ClienteDashboardDTO {
     public String getEmailCliente() {
         return emailCliente;
     }
-    
-    public void setEmailCliente(String emailCliente) {
+      public void setEmailCliente(String emailCliente) {
         this.emailCliente = emailCliente;
+    }
+    
+    public String getTelefoneCliente() {
+        return telefoneCliente;
+    }
+      public void setTelefoneCliente(String telefoneCliente) {
+        this.telefoneCliente = telefoneCliente;
+    }
+    
+    public String getCpfCliente() {
+        return cpfCliente;
+    }
+    
+    public void setCpfCliente(String cpfCliente) {
+        this.cpfCliente = cpfCliente;
+    }
+    
+    public String getDataNascCliente() {
+        return dataNascCliente;
+    }
+    
+    public void setDataNascCliente(String dataNascCliente) {
+        this.dataNascCliente = dataNascCliente;
     }
     
     public Long getTotalEventosInscritos() {

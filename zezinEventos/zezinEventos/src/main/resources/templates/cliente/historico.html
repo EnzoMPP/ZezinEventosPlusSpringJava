@@ -124,11 +124,10 @@
                         <p class="mb-0">Total de Eventos</p>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-4">
+            </div>            <div class="col-md-4">
                 <div class="card bg-success text-white">
                     <div class="card-body text-center">
-                        <h3 th:text="${#lists.size(#lists.select(inscricoes, 'evento.dataEvento.isAfter(T(java.time.LocalDateTime).now())'))}">0</h3>
+                        <h3 th:text="${eventosProximos}">0</h3>
                         <p class="mb-0">Eventos Próximos</p>
                     </div>
                 </div>
@@ -136,7 +135,7 @@
             <div class="col-md-4">
                 <div class="card bg-secondary text-white">
                     <div class="card-body text-center">
-                        <h3 th:text="${#lists.size(#lists.select(inscricoes, '!evento.dataEvento.isAfter(T(java.time.LocalDateTime).now())'))}">0</h3>
+                        <h3 th:text="${eventosFinalizados}">0</h3>
                         <p class="mb-0">Eventos Finalizados</p>
                     </div>
                 </div>

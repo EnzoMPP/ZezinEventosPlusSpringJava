@@ -129,20 +129,18 @@
                             </div>                            <div class="col-md-4">
                                 <strong>Email:</strong><br>
                                 <span th:text="${cliente.emailCliente}">email@cliente.com</span>
-                            </div>
-                            <div class="col-md-4">
+                            </div>                            <div class="col-md-4">
                                 <strong>Telefone:</strong><br>
-                                <span th:text="${cliente.telefone ?: 'Não informado'}">Não informado</span>
+                                <span th:text="${cliente.telefoneCliente ?: 'Não informado'}">Não informado</span>
                             </div>
                         </div>
-                        <div class="row mt-3" th:if="${cliente}">
-                            <div class="col-md-4">
+                        <div class="row mt-3" th:if="${cliente}">                            <div class="col-md-4">
                                 <strong>CPF:</strong><br>
-                                <span th:text="${cliente.cpf ?: 'Não informado'}">Não informado</span>
+                                <span th:text="${cliente.cpfCliente ?: 'Não informado'}">Não informado</span>
                             </div>
                             <div class="col-md-4">
                                 <strong>Data de Nascimento:</strong><br>
-                                <span th:text="${cliente.dataNasc ?: 'Não informado'}">Não informado</span>
+                                <span th:text="${cliente.dataNascCliente ?: 'Não informado'}">Não informado</span>
                             </div>
                             <div class="col-md-4">
                                 <strong>Status:</strong><br>
