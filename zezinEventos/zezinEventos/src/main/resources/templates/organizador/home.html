@@ -50,7 +50,8 @@
                         <p class="mb-0">Total Inscrições</p>
                     </div>
                 </div>
-            </div>            <div class="col-md-3">
+            </div>
+            <div class="col-md-3">
                 <div class="card bg-warning text-dark shadow">
                     <div class="card-body text-center">
                         <i class="bi bi-clock-history display-4 mb-3"></i>
@@ -88,14 +89,15 @@
                         <h5 class="mb-0">
                             <i class="bi bi-calendar-event me-2"></i>Meus Eventos
                         </h5>
-                    </div>                    <div class="card-body">
+                    </div>
+                    <div class="card-body">
                         <!-- Quando há eventos -->
                         <div th:if="${totalEventos > 0}" class="py-3">
                             <div class="text-center mb-3">
                                 <i class="bi bi-calendar-event display-4 text-success mb-3"></i>
                                 <h6>Você tem <span th:text="${totalEventos}">0</span> evento(s) criado(s)</h6>
                                 <p class="text-muted mb-3">
-                                    <span th:text="${eventosAtivos}">0</span> ativo(s) • 
+                                    <span th:text="${eventosAtivos}">0</span> ativo(s) •
                                     <span th:text="${eventosFinalizados}">0</span> finalizado(s)
                                 </p>
                             </div>
@@ -108,7 +110,7 @@
                                 </a>
                             </div>
                         </div>
-                        
+
                         <!-- Quando não há eventos -->
                         <div th:if="${totalEventos == 0}" class="text-center py-3">
                             <i class="bi bi-calendar-x display-4 text-muted mb-3"></i>
@@ -122,9 +124,9 @@
             </div>
         </div>
 
-    
-            <!-- Informações da Empresa -->
-            <div class="col-md-4">
+
+        <div class="row mt-4">
+            <div class="col-12">
                 <div class="card shadow border-0">
                     <div class="card-header bg-warning text-dark">
                         <h5 class="mb-0">
@@ -132,50 +134,71 @@
                         </h5>
                     </div>
                     <div class="card-body" th:if="${organizador}">
-                        <div class="mb-2">
-                            <strong>Empresa:</strong><br>
-                            <span th:text="${organizador.empresa}">Nome da Empresa</span>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="border-end pe-3">
+                                    <div class="mb-3">
+                                        <strong class="text-muted">Empresa:</strong><br>
+                                        <span class="h6 text-dark" th:text="${organizador.empresa}">Nome da
+                                            Empresa</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong class="text-muted">Responsável:</strong><br>
+                                        <span th:text="${organizador.nome}">Nome do Responsável</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="border-end pe-3">
+                                    <div class="mb-3">
+                                        <strong class="text-muted">Email:</strong><br>
+                                        <span th:text="${organizador.email}">email@empresa.com</span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <strong class="text-muted">Telefone:</strong><br>
+                                        <span th:text="${organizador.telefone ?: 'Não informado'}">Não informado</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <strong class="text-muted">CNPJ:</strong><br>
+                                    <span th:text="${organizador.cnpj ?: 'Não informado'}">Não informado</span>
+                                </div>
+                                <div class="mb-3">
+                                    <strong class="text-muted">Status:</strong><br>
+                                    <span class="badge bg-success fs-6">Ativo</span>
+                                </div>
+                                <div class="mt-4">
+                                    <a href="/organizador/perfil" class="btn btn-warning w-100">
+                                        <i class="bi bi-person-gear me-2"></i>Editar Perfil
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                        <div class="mb-2">
-                            <strong>Responsável:</strong><br>
-                            <span th:text="${organizador.nome}">Nome do Responsável</span>
-                        </div>
-                        <div class="mb-2">
-                            <strong>Email:</strong><br>
-                            <span th:text="${organizador.email}">email@empresa.com</span>
-                        </div>
-                        <div class="mb-2">
-                            <strong>CNPJ:</strong><br>
-                            <span th:text="${organizador.cnpj ?: 'Não informado'}">Não informado</span>
-                        </div>
-                        <div class="mb-2">
-                            <strong>Telefone:</strong><br>
-                            <span th:text="${organizador.telefone ?: 'Não informado'}">Não informado</span>
-                        </div>
-                        <div class="mb-3">
-                            <strong>Status:</strong><br>
-                            <span class="badge bg-success">Ativo</span>
-                        </div>                        <a href="/organizador/perfil" class="btn btn-warning btn-sm w-100">
-                            <i class="bi bi-person-gear me-2"></i>Meu Perfil
-                        </a>
                     </div>
                 </div>
             </div>
-        <div th:replace="~{fragments/components :: scripts}"></div>
+        </div>
+    </div>
 
-        <style>
-            .card {
-                transition: transform 0.2s;
-            }
+    <div th:replace="~{fragments/components :: scripts}"></div>
 
-            .card:hover {
-                transform: translateY(-2px);
-            }
+    <style>
+        .card {
+            transition: transform 0.2s;
+        }
 
-            .btn {
-                transition: all 0.2s;
-            }
-        </style>
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            transition: all 0.2s;
+        }
+    </style>
 </body>
 
 </html>
