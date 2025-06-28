@@ -1,40 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${pageTitle}">Gerenciar Usuários</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        .table th {
-            border-top: none;
-            font-weight: 600;
-            color: #495057;
-            background-color: #f8f9fa;
-        }
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            font-weight: bold;
-            color: white;
-        }
-        .btn-action {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.875rem;
-        }
-        .stats-card {
-            transition: transform 0.2s ease-in-out;
-        }
-        .stats-card:hover {
-            transform: translateY(-2px);
-        }
-    </style>
 </head>
+
 <body class="bg-light">
     <!-- Navbar -->
     <nav th:replace="~{fragments/components :: navbar-admin}"></nav>
@@ -50,7 +24,8 @@
                             Gerenciar Usuários
                         </h2>
                         <p class="text-muted mb-0">Administre todos os usuários do sistema</p>
-                    </div>                    <div>
+                    </div>
+                    <div>
                         <a href="/admin/usuarios/novo-admin" class="btn btn-success me-2">
                             <i class="bi bi-person-plus me-1"></i>Cadastrar Admin
                         </a>
@@ -143,12 +118,8 @@
                             <div class="row g-3 align-items-end">
                                 <div class="col-md-8">
                                     <label for="busca" class="form-label">Buscar Usuários</label>
-                                    <input type="text" 
-                                           class="form-control" 
-                                           id="busca" 
-                                           name="busca" 
-                                           th:value="${busca}"
-                                           placeholder="Digite o nome do usuário...">
+                                    <input type="text" class="form-control" id="busca" name="busca" th:value="${busca}"
+                                        placeholder="Digite o nome do usuário...">
                                 </div>
                                 <div class="col-md-4">
                                     <div class="d-flex gap-2">
@@ -186,7 +157,7 @@
                                 <a href="/admin/usuarios" class="btn btn-outline-primary">Ver Todos os Usuários</a>
                             </div>
                         </div>
-                        
+
                         <div th:if="${!#lists.isEmpty(usuarios)}">
                             <div class="table-responsive">
                                 <table class="table table-hover mb-0">
@@ -204,24 +175,30 @@
                                         <tr th:each="usuario : ${usuarios}">
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <div class="user-avatar me-3" th:classappend="${usuario.tipoClasse}">
-                                                        <span th:text="${#strings.substring(usuario.nome, 0, 1).toUpperCase()}">U</span>
+                                                    <div class="user-avatar me-3"
+                                                        th:classappend="${usuario.tipoClasse}">
+                                                        <span
+                                                            th:text="${#strings.substring(usuario.nome, 0, 1).toUpperCase()}">U</span>
                                                     </div>
                                                     <div>
-                                                        <div class="fw-bold" th:text="${usuario.nome}">Nome</div>                                        <div class="small text-muted" th:text="${usuario.login}">Login</div>
-                                        <div th:if="${usuario.empresa != null}" class="small text-muted">
-                                            <i class="bi bi-building me-1"></i>
-                                            <span th:text="${usuario.empresa}">Empresa</span>
-                                        </div>
-                                        <div th:if="${usuario.cargo != null}" class="small text-muted">
-                                            <i class="bi bi-briefcase me-1"></i>
-                                            <span th:text="${usuario.cargo}">Cargo</span>
-                                        </div>
+                                                        <div class="fw-bold" th:text="${usuario.nome}">Nome</div>
+                                                        <div class="small text-muted" th:text="${usuario.login}">Login
+                                                        </div>
+                                                        <div th:if="${usuario.empresa != null}"
+                                                            class="small text-muted">
+                                                            <i class="bi bi-building me-1"></i>
+                                                            <span th:text="${usuario.empresa}">Empresa</span>
+                                                        </div>
+                                                        <div th:if="${usuario.cargo != null}" class="small text-muted">
+                                                            <i class="bi bi-briefcase me-1"></i>
+                                                            <span th:text="${usuario.cargo}">Cargo</span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td>
-                                                <span class="badge" th:classappend="${usuario.tipoClasse}" th:text="${usuario.tipoTexto}">Tipo</span>
+                                                <span class="badge" th:classappend="${usuario.tipoClasse}"
+                                                    th:text="${usuario.tipoTexto}">Tipo</span>
                                             </td>
                                             <td>
                                                 <div class="small">
@@ -234,28 +211,31 @@
                                                         <span th:text="${usuario.telefone}">Telefone</span>
                                                     </div>
                                                 </div>
-                                            </td>                                            <td>
-                                                <span th:if="${usuario.documento != null}" 
-                                                      class="font-monospace small" 
-                                                      th:text="${usuario.documento}">Documento</span>
+                                            </td>
+                                            <td>
+                                                <span th:if="${usuario.documento != null}" class="font-monospace small"
+                                                    th:text="${usuario.documento}">Documento</span>
                                                 <span th:if="${usuario.documento == null}" class="text-muted">-</span>
                                             </td>
                                             <td>
                                                 <span th:if="${usuario.ativo}" class="badge bg-success">Ativo</span>
-                                                <span th:if="${!usuario.ativo}" class="badge bg-secondary">Inativo</span>
-                                            </td>                                            <td class="text-center">
+                                                <span th:if="${!usuario.ativo}"
+                                                    class="badge bg-secondary">Inativo</span>
+                                            </td>
+                                            <td class="text-center">
                                                 <div class="btn-group" role="group">
                                                     <!-- Editar -->
                                                     <a th:href="@{'/admin/usuarios/editar/' + ${usuario.tipo} + '/' + ${usuario.id}}"
-                                                       class="btn btn-primary btn-action" title="Editar">
+                                                        class="btn btn-primary btn-action" title="Editar">
                                                         <i class="bi bi-pencil"></i>
                                                     </a>
-                                                      <!-- Excluir (Exclusão Lógica) -->
-                                                    <form th:action="@{'/admin/usuarios/desativar/' + ${usuario.tipo} + '/' + ${usuario.id}}" 
-                                                          method="post" 
-                                                          style="display: inline;"
-                                                          onsubmit="return confirm('Tem certeza que deseja excluir este usuário?')">
-                                                        <button type="submit" class="btn btn-danger btn-action" title="Excluir Usuário">
+                                                    <!-- Excluir (Exclusão Lógica) -->
+                                                    <form
+                                                        th:action="@{'/admin/usuarios/desativar/' + ${usuario.tipo} + '/' + ${usuario.id}}"
+                                                        method="post" style="display: inline;"
+                                                        onsubmit="return confirm('Tem certeza que deseja excluir este usuário?')">
+                                                        <button type="submit" class="btn btn-danger btn-action"
+                                                            title="Excluir Usuário">
                                                             <i class="bi bi-trash"></i>
                                                         </button>
                                                     </form>
@@ -274,21 +254,6 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Auto-focus no campo de busca
-        document.getElementById('busca').focus();
-          // Confirmar ações críticas
-        document.querySelectorAll('form[onsubmit*="confirm"]').forEach(form => {
-            form.addEventListener('submit', function(e) {
-                const isDeactivate = this.action.includes('/desativar/');
-                
-                if (isDeactivate) {
-                    if (!confirm('Tem certeza que deseja excluir este usuário?\nEle não poderá mais acessar o sistema.')) {
-                        e.preventDefault();
-                    }
-                }
-            });
-        });
-    </script>
 </body>
+
 </html>
