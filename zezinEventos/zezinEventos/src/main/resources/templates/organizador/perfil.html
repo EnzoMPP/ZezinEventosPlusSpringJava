@@ -1,56 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${pageTitle}">Meu Perfil</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        .form-floating label {
-            color: #6c757d;
-        }
-        .is-invalid {
-            border-color: #dc3545;
-        }
-        .invalid-feedback {
-            display: block;
-        }
-        .card-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-        }
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-            transform: translateY(-1px);
-            transition: all 0.3s ease;
-        }
-        .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-        }
-        .section-divider {
-            border-left: 4px solid #667eea;
-            padding-left: 1rem;
-            margin: 1.5rem 0;
-        }
-        .password-toggle {
-            cursor: pointer;
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 10;
-        }
-        .form-floating {
-            position: relative;
-        }
-    </style>
+
 </head>
+
 <body class="bg-light">
     <!-- Navbar -->
     <nav th:replace="~{fragments/components :: navbar-organizador}"></nav>
@@ -94,24 +53,20 @@
                     </div>
                     <div class="card-body">
                         <form th:action="@{/organizador/perfil/salvar}" th:object="${organizador}" method="post">
-                            
+
                             <!-- Informações Pessoais -->
                             <div class="section-divider">
                                 <h6 class="text-primary mb-3">
                                     <i class="bi bi-person me-2"></i>Informações Pessoais
                                 </h6>
                             </div>
-                            
+
                             <div class="row">
                                 <!-- Nome do Responsável -->
                                 <div class="col-md-6 mb-3">
                                     <div class="form-floating">
-                                        <input type="text" 
-                                               class="form-control" 
-                                               id="nome" 
-                                               th:field="*{nome}"
-                                               placeholder="Nome Completo"
-                                               required>
+                                        <input type="text" class="form-control" id="nome" th:field="*{nome}"
+                                            placeholder="Nome Completo" required>
                                         <label for="nome">
                                             <i class="bi bi-person me-2"></i>Nome Completo
                                         </label>
@@ -121,12 +76,8 @@
                                 <!-- Email -->
                                 <div class="col-md-6 mb-3">
                                     <div class="form-floating">
-                                        <input type="email" 
-                                               class="form-control" 
-                                               id="email" 
-                                               th:field="*{email}"
-                                               placeholder="Email"
-                                               required>
+                                        <input type="email" class="form-control" id="email" th:field="*{email}"
+                                            placeholder="Email" required>
                                         <label for="email">
                                             <i class="bi bi-envelope me-2"></i>Email
                                         </label>
@@ -136,12 +87,8 @@
                                 <!-- Telefone -->
                                 <div class="col-md-6 mb-3">
                                     <div class="form-floating">
-                                        <input type="tel" 
-                                               class="form-control" 
-                                               id="telefone" 
-                                               th:field="*{telefone}"
-                                               placeholder="Telefone"
-                                               required>
+                                        <input type="tel" class="form-control" id="telefone" th:field="*{telefone}"
+                                            placeholder="Telefone" required>
                                         <label for="telefone">
                                             <i class="bi bi-telephone me-2"></i>Telefone
                                         </label>
@@ -151,12 +98,8 @@
                                 <!-- Login -->
                                 <div class="col-md-6 mb-3">
                                     <div class="form-floating">
-                                        <input type="text" 
-                                               class="form-control" 
-                                               id="login" 
-                                               th:field="*{login}"
-                                               placeholder="Login"
-                                               required>
+                                        <input type="text" class="form-control" id="login" th:field="*{login}"
+                                            placeholder="Login" required>
                                         <label for="login">
                                             <i class="bi bi-person-badge me-2"></i>Login
                                         </label>
@@ -175,12 +118,8 @@
                                 <!-- Nome da Empresa -->
                                 <div class="col-md-8 mb-3">
                                     <div class="form-floating">
-                                        <input type="text" 
-                                               class="form-control" 
-                                               id="empresa" 
-                                               th:field="*{empresa}"
-                                               placeholder="Nome da Empresa"
-                                               required>
+                                        <input type="text" class="form-control" id="empresa" th:field="*{empresa}"
+                                            placeholder="Nome da Empresa" required>
                                         <label for="empresa">
                                             <i class="bi bi-building me-2"></i>Nome da Empresa
                                         </label>
@@ -190,14 +129,9 @@
                                 <!-- CNPJ -->
                                 <div class="col-md-4 mb-3">
                                     <div class="form-floating">
-                                        <input type="text" 
-                                               class="form-control" 
-                                               id="cnpj" 
-                                               th:field="*{cnpj}"
-                                               placeholder="CNPJ"
-                                               pattern="\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}"
-                                               title="Formato: XX.XXX.XXX/XXXX-XX"
-                                               required>
+                                        <input type="text" class="form-control" id="cnpj" th:field="*{cnpj}"
+                                            placeholder="CNPJ" pattern="\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}"
+                                            title="Formato: XX.XXX.XXX/XXXX-XX" required>
                                         <label for="cnpj">
                                             <i class="bi bi-card-text me-2"></i>CNPJ
                                         </label>
@@ -217,35 +151,30 @@
                                 <!-- Nova Senha -->
                                 <div class="col-md-6 mb-3">
                                     <div class="form-floating">
-                                        <input type="password" 
-                                               class="form-control" 
-                                               id="senha" 
-                                               th:field="*{senha}"
-                                               placeholder="Nova Senha"
-                                               minlength="6">
+                                        <input type="password" class="form-control" id="senha" th:field="*{senha}"
+                                            placeholder="Nova Senha" minlength="6">
                                         <label for="senha">
                                             <i class="bi bi-lock me-2"></i>Nova Senha
                                         </label>
                                         <i class="bi bi-eye password-toggle" onclick="togglePassword('senha')"></i>
                                     </div>
                                     <div class="form-text">
-                                        <small class="text-muted">Deixe em branco para manter a senha atual. Mínimo 6 caracteres.</small>
+                                        <small class="text-muted">Deixe em branco para manter a senha atual. Mínimo 6
+                                            caracteres.</small>
                                     </div>
                                 </div>
 
                                 <!-- Confirmar Senha -->
                                 <div class="col-md-6 mb-3">
                                     <div class="form-floating">
-                                        <input type="password" 
-                                               class="form-control" 
-                                               id="confirmarSenha" 
-                                               th:field="*{confirmarSenha}"
-                                               placeholder="Confirmar Nova Senha"
-                                               minlength="6">
+                                        <input type="password" class="form-control" id="confirmarSenha"
+                                            th:field="*{confirmarSenha}" placeholder="Confirmar Nova Senha"
+                                            minlength="6">
                                         <label for="confirmarSenha">
                                             <i class="bi bi-lock-fill me-2"></i>Confirmar Nova Senha
                                         </label>
-                                        <i class="bi bi-eye password-toggle" onclick="togglePassword('confirmarSenha')"></i>
+                                        <i class="bi bi-eye password-toggle"
+                                            onclick="togglePassword('confirmarSenha')"></i>
                                     </div>
                                 </div>
                             </div>
@@ -268,76 +197,7 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Máscara para CNPJ
-        document.getElementById('cnpj').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length <= 14) {
-                value = value.replace(/^(\d{2})(\d)/, '$1.$2');
-                value = value.replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3');
-                value = value.replace(/\.(\d{3})(\d)/, '.$1/$2');
-                value = value.replace(/(\d{4})(\d)/, '$1-$2');
-                e.target.value = value;
-            }
-        });
 
-        // Máscara para telefone
-        document.getElementById('telefone').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length <= 11) {
-                if (value.length <= 10) {
-                    value = value.replace(/^(\d{2})(\d)/, '($1) $2');
-                    value = value.replace(/(\d{4})(\d)/, '$1-$2');
-                } else {
-                    value = value.replace(/^(\d{2})(\d)/, '($1) $2');
-                    value = value.replace(/(\d{5})(\d)/, '$1-$2');
-                }
-                e.target.value = value;
-            }
-        });
-
-        // Toggle de senha
-        function togglePassword(fieldId) {
-            const passwordField = document.getElementById(fieldId);
-            const toggleIcon = passwordField.nextElementSibling.nextElementSibling;
-            
-            if (passwordField.type === 'password') {
-                passwordField.type = 'text';
-                toggleIcon.classList.remove('bi-eye');
-                toggleIcon.classList.add('bi-eye-slash');
-            } else {
-                passwordField.type = 'password';
-                toggleIcon.classList.remove('bi-eye-slash');
-                toggleIcon.classList.add('bi-eye');
-            }
-        }
-
-        // Validação de confirmação de senha
-        document.getElementById('confirmarSenha').addEventListener('blur', function() {
-            const senha = document.getElementById('senha').value;
-            const confirmarSenha = this.value;
-            
-            if (senha && confirmarSenha && senha !== confirmarSenha) {
-                this.classList.add('is-invalid');
-                // Adicionar mensagem de erro se não existir
-                if (!this.nextElementSibling || !this.nextElementSibling.classList.contains('invalid-feedback')) {
-                    const errorDiv = document.createElement('div');
-                    errorDiv.className = 'invalid-feedback';
-                    errorDiv.textContent = 'As senhas não coincidem.';
-                    this.parentNode.appendChild(errorDiv);
-                }
-            } else {
-                this.classList.remove('is-invalid');
-                // Remover mensagem de erro se existir
-                const errorDiv = this.parentNode.querySelector('.invalid-feedback');
-                if (errorDiv) {
-                    errorDiv.remove();
-                }
-            }
-        });
-
-        // Auto-focus no primeiro campo
-        document.getElementById('nome').focus();
-    </script>
 </body>
+
 </html>

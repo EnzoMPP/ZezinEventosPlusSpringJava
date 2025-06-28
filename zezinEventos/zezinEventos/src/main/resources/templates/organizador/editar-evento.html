@@ -40,17 +40,17 @@
                     </div>
                     <div class="card-body">
                         <form th:action="@{/organizador/eventos/salvar}" method="post" th:object="${evento}">
-                            
+
                             <!-- Campo hidden para ID -->
                             <input type="hidden" th:field="*{id}">
-                            
+
                             <!-- Nome do Evento -->
                             <div class="mb-3">
                                 <label for="nome" class="form-label fw-bold">
                                     <i class="bi bi-card-text me-1"></i>Nome do Evento *
                                 </label>
-                                <input type="text" class="form-control" id="nome" th:field="*{nome}" 
-                                       placeholder="Ex: Workshop de Spring Boot" required maxlength="200">
+                                <input type="text" class="form-control" id="nome" th:field="*{nome}"
+                                    placeholder="Ex: Workshop de Spring Boot" required maxlength="200">
                             </div>
 
                             <!-- Descrição -->
@@ -59,7 +59,7 @@
                                     <i class="bi bi-file-text me-1"></i>Descrição
                                 </label>
                                 <textarea class="form-control" id="descricao" th:field="*{descricao}" rows="4"
-                                          placeholder="Descreva o que será abordado no evento..."></textarea>
+                                    placeholder="Descreva o que será abordado no evento..."></textarea>
                             </div>
 
                             <!-- Tipo e Preço -->
@@ -70,10 +70,9 @@
                                     </label>
                                     <select class="form-select" id="tipo" th:field="*{tipo}" required>
                                         <option value="">Selecione o tipo</option>
-                                        <option th:each="tipoEvento : ${tiposEvento}" 
-                                                th:value="${tipoEvento}" 
-                                                th:text="${tipoEvento}"
-                                                th:selected="${tipoEvento == evento.tipo}">PALESTRA</option>
+                                        <option th:each="tipoEvento : ${tiposEvento}" th:value="${tipoEvento}"
+                                            th:text="${tipoEvento}" th:selected="${tipoEvento == evento.tipo}">PALESTRA
+                                        </option>
                                     </select>
                                 </div>
                                 <div class="col-md-6">
@@ -82,9 +81,8 @@
                                     </label>
                                     <div class="input-group">
                                         <span class="input-group-text">R$</span>
-                                        <input type="number" class="form-control" id="precoIngresso" 
-                                               th:field="*{precoIngresso}" step="0.01" min="0" 
-                                               placeholder="0,00">
+                                        <input type="number" class="form-control" id="precoIngresso"
+                                            th:field="*{precoIngresso}" step="0.01" min="0" placeholder="0,00">
                                     </div>
                                     <small class="form-text text-muted">Deixe 0 para eventos gratuitos</small>
                                 </div>
@@ -96,15 +94,15 @@
                                     <label for="dataEvento" class="form-label fw-bold">
                                         <i class="bi bi-calendar me-1"></i>Data e Horário *
                                     </label>
-                                    <input type="datetime-local" class="form-control" id="dataEvento" 
-                                           th:field="*{dataEvento}" required>
+                                    <input type="datetime-local" class="form-control" id="dataEvento"
+                                        th:field="*{dataEvento}" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="local" class="form-label fw-bold">
                                         <i class="bi bi-geo-alt me-1"></i>Local *
                                     </label>
-                                    <input type="text" class="form-control" id="local" th:field="*{local}" 
-                                           placeholder="Ex: Auditório Principal, Sala 101" required maxlength="200">
+                                    <input type="text" class="form-control" id="local" th:field="*{local}"
+                                        placeholder="Ex: Auditório Principal, Sala 101" required maxlength="200">
                                 </div>
                             </div>
 
@@ -113,9 +111,8 @@
                                 <label for="vagasTotais" class="form-label fw-bold">
                                     <i class="bi bi-people me-1"></i>Número de Vagas *
                                 </label>
-                                <input type="number" class="form-control" id="vagasTotais" 
-                                       th:field="*{vagasTotais}" min="1" max="10000" 
-                                       placeholder="Ex: 50" required>
+                                <input type="number" class="form-control" id="vagasTotais" th:field="*{vagasTotais}"
+                                    min="1" max="10000" placeholder="Ex: 50" required>
                                 <small class="form-text text-muted">Número máximo de participantes</small>
                             </div>
 
@@ -125,7 +122,7 @@
                                     <i class="bi bi-person-badge me-1"></i>Palestrantes
                                 </label>
                                 <textarea class="form-control" id="palestrantes" th:field="*{palestrantes}" rows="3"
-                                          placeholder="Ex: Dr. João Silva, Maria Santos (Especialista em Java), Prof. Pedro Costa"></textarea>
+                                    placeholder="Ex: Dr. João Silva, Maria Santos (Especialista em Java), Prof. Pedro Costa"></textarea>
                                 <small class="form-text text-muted">Liste os palestrantes separados por vírgula</small>
                             </div>
 
@@ -147,15 +144,7 @@
     </div>
 
     <div th:replace="~{fragments/components :: scripts}"></div>
-    
-    <script>
-        // Definir data mínima como hoje
-        document.addEventListener('DOMContentLoaded', function() {
-            const agora = new Date();
-            const dataMinima = agora.toISOString().slice(0, 16);
-            document.getElementById('dataEvento').min = dataMinima;
-        });
-    </script>
+
 </body>
 
 </html>
