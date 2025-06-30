@@ -179,6 +179,72 @@
     transition: width 1s ease-in-out;
 }
 
+ .lista-espera-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .evento-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .lista-espera-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .lista-espera-item:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .posicao-badge {
+            background: #007bff;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .cliente-info {
+            flex: 1;
+            margin-left: 15px;
+        }
+        
+        .data-entrada {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+        
+        .stats-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+        }
+
 
 
 @media print {

@@ -52,4 +52,60 @@ public class ListaEspera {
         this.ativo = true;
         this.notificado = false;
     }
+
+    public Boolean getNotificado() {
+        return notificado;
+    }
+
+    public void setNotificado(Boolean notificado) {
+        this.notificado = notificado;
+    }
+
+    public Boolean getAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(Boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    public Integer getPosicao() {
+        return posicao;
+    }
+
+    public void setPosicao(Integer posicao) {
+        this.posicao = posicao;
+    }
+
+    public LocalDateTime getDataEntrada() {
+        return dataEntrada;
+    }
+
+    public void setDataEntrada(LocalDateTime dataEntrada) {
+        this.dataEntrada = dataEntrada;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public Evento getEvento() {
+        return evento;
+    }
+
+    public void setEvento(Evento evento) {
+        this.evento = evento;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

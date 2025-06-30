@@ -4,7 +4,7 @@
 function togglePassword(fieldId = 'password', iconId = 'toggleIcon') {
     const passwordField = document.getElementById(fieldId);
     const toggleIcon = document.getElementById(iconId);
-    
+
     if (passwordField) {
         if (passwordField.type === 'password') {
             passwordField.type = 'text';
@@ -49,7 +49,7 @@ function autoHideAlerts() {
 
 // Máscara para telefone
 function aplicarMascaraTelefone(elemento) {
-    elemento.addEventListener('input', function(e) {
+    elemento.addEventListener('input', function (e) {
         let value = e.target.value.replace(/\D/g, '');
         if (value.length <= 11) {
             value = value.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
@@ -63,7 +63,7 @@ function aplicarMascaraTelefone(elemento) {
 
 // Máscara para CPF
 function aplicarMascaraCPF(elemento) {
-    elemento.addEventListener('input', function(e) {
+    elemento.addEventListener('input', function (e) {
         let value = e.target.value.replace(/\D/g, '');
         value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
         e.target.value = value;
@@ -72,7 +72,7 @@ function aplicarMascaraCPF(elemento) {
 
 // Máscara para CNPJ
 function aplicarMascaraCNPJ(elemento) {
-    elemento.addEventListener('input', function(e) {
+    elemento.addEventListener('input', function (e) {
         let value = e.target.value.replace(/\D/g, '');
         value = value.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})/, '$1.$2.$3/$4-$5');
         e.target.value = value;
@@ -85,26 +85,26 @@ function aplicarMascaraCNPJ(elemento) {
 function validarSenhasCoincidentes() {
     const senhaField = document.getElementById('senha');
     const confirmarSenhaField = document.getElementById('confirmarSenha') || document.getElementById('confirmSenha');
-    
+
     if (!senhaField || !confirmarSenhaField) return;
-    
+
     function validar() {
         const senha = senhaField.value;
         const confirmarSenha = confirmarSenhaField.value;
-        
+
         if (senha && senha.length < 6) {
             senhaField.setCustomValidity('A senha deve ter pelo menos 6 caracteres');
         } else {
             senhaField.setCustomValidity('');
         }
-        
+
         if (senha && confirmarSenha && senha !== confirmarSenha) {
             confirmarSenhaField.setCustomValidity('As senhas não conferem');
         } else {
             confirmarSenhaField.setCustomValidity('');
         }
     }
-    
+
     senhaField.addEventListener('input', validar);
     confirmarSenhaField.addEventListener('input', validar);
 }
@@ -113,7 +113,7 @@ function validarSenhasCoincidentes() {
 function validarLogin() {
     const loginField = document.getElementById('login');
     if (loginField) {
-        loginField.addEventListener('input', function(e) {
+        loginField.addEventListener('input', function (e) {
             e.target.value = e.target.value.replace(/[^a-zA-Z0-9._-]/g, '');
         });
     }
@@ -155,12 +155,12 @@ function animarBarrasProgresso() {
 // Alternar campos de cadastro baseado no tipo de usuário
 function alternarCamposCadastro() {
     document.querySelectorAll('input[name="tipoUsuario"]').forEach(radio => {
-        radio.addEventListener('change', function() {
+        radio.addEventListener('change', function () {
             const campoCPF = document.getElementById('campoCPF');
             const campoDataNasc = document.getElementById('campoDataNasc');
             const campoCNPJ = document.getElementById('campoCNPJ');
             const campoEmpresa = document.getElementById('campoEmpresa');
-            
+
             if (this.value === 'ORGANIZADOR') {
                 // Mostrar campos do organizador
                 if (campoCPF) campoCPF.classList.add('d-none');
@@ -184,10 +184,10 @@ function alternarCamposCadastro() {
 function validarDataEvento() {
     const dataEventoField = document.getElementById('dataEvento');
     if (dataEventoField) {
-        dataEventoField.addEventListener('change', function() {
+        dataEventoField.addEventListener('change', function () {
             const selectedDate = new Date(this.value);
             const now = new Date();
-            
+
             if (selectedDate <= now) {
                 alert('A data do evento deve ser no futuro!');
                 this.focus();
@@ -200,12 +200,12 @@ function validarDataEvento() {
 function validarVagas() {
     const vagasTotaisField = document.getElementById('vagasTotais');
     if (vagasTotaisField) {
-        vagasTotaisField.addEventListener('change', function() {
+        vagasTotaisField.addEventListener('change', function () {
             const vagasOcupadasField = document.getElementById('vagasOcupadas');
             if (vagasOcupadasField) {
                 const vagasOcupadas = parseInt(vagasOcupadasField.value) || 0;
                 const vagasTotais = parseInt(this.value) || 0;
-                
+
                 if (vagasTotais < vagasOcupadas) {
                     alert('O total de vagas não pode ser menor que as vagas já ocupadas!');
                     this.value = vagasOcupadas;
@@ -219,7 +219,7 @@ function validarVagas() {
 function validarPreco() {
     const precoIngressoField = document.getElementById('precoIngresso');
     if (precoIngressoField) {
-        precoIngressoField.addEventListener('input', function() {
+        precoIngressoField.addEventListener('input', function () {
             let value = parseFloat(this.value);
             if (isNaN(value) || value < 0) {
                 this.value = '0.00';
@@ -230,65 +230,65 @@ function validarPreco() {
 
 // ===== IMPRESSÃO =====
 
-window.addEventListener('beforeprint', function() {
+window.addEventListener('beforeprint', function () {
     document.body.classList.add('printing');
 });
 
-window.addEventListener('afterprint', function() {
+window.addEventListener('afterprint', function () {
     document.body.classList.remove('printing');
 });
 
 // ===== INICIALIZAÇÃO =====
 
 // Executar quando o DOM estiver carregado
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Atualizar hora (se elemento existir)
     updateTime();
     setInterval(updateTime, 1000);
-    
+
     // Auto-hide de alertas
     autoHideAlerts();
-    
+
     // Aplicar máscaras
     const telefoneFields = document.querySelectorAll('#telefone, input[name="telefone"]');
     telefoneFields.forEach(field => aplicarMascaraTelefone(field));
-    
+
     const cpfFields = document.querySelectorAll('#cpf, input[name="cpf"]');
     cpfFields.forEach(field => aplicarMascaraCPF(field));
-    
+
     const cnpjFields = document.querySelectorAll('#cnpj, input[name="cnpj"]');
     cnpjFields.forEach(field => aplicarMascaraCNPJ(field));
-    
+
     // Validações
     validarSenhasCoincidentes();
     validarLogin();
     validarDataEvento();
     validarVagas();
     validarPreco();
-    
+
     // Alternar campos de cadastro
     alternarCamposCadastro();
-    
+
     // Animar barras de progresso
     animarBarrasProgresso();
-    
+
     // Auto-focus em campos de busca
     const buscaField = document.getElementById('busca');
     if (buscaField) {
         buscaField.focus();
     }
-    
+
     // Configurar toggle de senha (múltiplos campos)
     const togglePasswordBtn = document.getElementById('togglePassword');
     if (togglePasswordBtn) {
         togglePasswordBtn.addEventListener('click', () => togglePassword());
     }
-    
+
     // Configurar confirmações de exclusão
     document.querySelectorAll('form[onsubmit*="confirm"]').forEach(form => {
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function (e) {
             const isDelete = this.action.includes('/excluir/') || this.action.includes('/desativar/');
-            
+
             if (isDelete) {
                 const tipo = this.action.includes('/usuarios/') ? 'usuário' : 'item';
                 if (!confirmarExclusao(tipo)) {
@@ -297,18 +297,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-    
+
     // Validação de formulário de edição de usuário
     const formEdicao = document.querySelector('form[action*="/editar/"]');
     if (formEdicao) {
-        formEdicao.addEventListener('submit', function(e) {
+        formEdicao.addEventListener('submit', function (e) {
             const senhaField = document.getElementById('senha');
             const confirmarSenhaField = document.getElementById('confirmarSenha') || document.getElementById('confirmSenha');
-            
+
             if (senhaField && confirmarSenhaField) {
                 const senha = senhaField.value;
                 const confirmarSenha = confirmarSenhaField.value;
-                
+
                 if (senha && (!confirmarSenha || senha !== confirmarSenha)) {
                     e.preventDefault();
                     alert('Por favor, confirme a nova senha corretamente.');
@@ -341,7 +341,7 @@ function togglePasswordLogin() {
 function togglePasswordField(inputId, iconId) {
     const input = document.getElementById(inputId);
     const icon = document.getElementById(iconId);
-    
+
     if (input && icon) {
         if (input.type === 'password') {
             input.type = 'text';
@@ -353,4 +353,14 @@ function togglePasswordField(inputId, iconId) {
             icon.classList.add('bi-eye');
         }
     }
+}
+
+// Auto-refresh da página a cada 30 segundos (para ver atualizações em tempo real)
+setTimeout(function () {
+    location.reload();
+}, 30000);
+
+// Confirmar ação de promover
+function confirmarPromocao() {
+    return confirm('Tem certeza que deseja promover o próximo cliente da fila?\n\nEsta ação irá:\n1. Inscrever o cliente no evento\n2. Remover da lista de espera\n3. Reorganizar as posições');
 }
