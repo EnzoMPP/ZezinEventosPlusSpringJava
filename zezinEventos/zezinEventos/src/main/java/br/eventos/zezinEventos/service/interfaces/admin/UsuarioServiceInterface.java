@@ -5,8 +5,6 @@ import br.eventos.zezinEventos.model.dto.admin.UsuariosListaDTO;
 
 /**
  * Interface para service de gerenciamento de usuários administrativos
- * Seguindo o Princípio da Inversão de Dependência (DIP)
- * Organizada na estrutura admin/ para melhor navegabilidade
  */
 public interface UsuarioServiceInterface {
     

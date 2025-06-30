@@ -5,9 +5,6 @@ import br.eventos.zezinEventos.model.Cliente;
 /**
  * DTO para transferência de dados do dashboard do cliente.
  * Encapsula informações do dashboard e estatísticas do cliente.
- * 
- * Este DTO segue o padrão de transferência de dados, evitando exposição direta
- * da entidade Cliente e permitindo controle sobre quais dados são transferidos.
  */
 public class ClienteDashboardDTO {
       private Long clienteId;

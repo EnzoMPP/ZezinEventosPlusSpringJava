@@ -9,9 +9,6 @@ import org.springframework.stereotype.Service;
 
 /**
  * Implementação do serviço para gerenciamento de perfil do cliente.
- * 
- * Esta classe segue o Princípio da Responsabilidade Única (SRP) ao focar
- * exclusivamente nas operações de perfil do cliente.
  */
 @Service
 public class ClientePerfilService implements ClientePerfilServiceInterface {

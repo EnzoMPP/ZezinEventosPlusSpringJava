@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * Controller especializado para dashboard do cliente.
- * 
- * Este controller segue o Princípio da Responsabilidade Única (SRP)
- * ao focar exclusivamente nas operações de dashboard do cliente.
+
  */
 @Controller
 @RequestMapping("/cliente")

@@ -9,10 +9,6 @@ import org.springframework.stereotype.Service;
 
 /**
  * Implementação do serviço para gerenciamento de perfil completo do organizador.
- * 
- * Esta classe segue o Princípio da Responsabilidade Única (SRP) ao focar
- * exclusivamente nas operações de perfil do organizador, incluindo tanto
- * dados herdados de usuário quanto específicos do organizador.
  */
 @Service
 public class OrganizadorPerfilService implements OrganizadorPerfilServiceInterface {

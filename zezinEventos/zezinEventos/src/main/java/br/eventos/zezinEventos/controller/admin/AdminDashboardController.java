@@ -16,9 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * - Exibir página inicial do admin
  * - Fornecer estatísticas do sistema
  * - Mostrar alertas importantes
- * 
- * Seguindo o princípio da Responsabilidade Única (SRP)
- * Seguindo o princípio da Inversão de Dependência (DIP)
  */
 @Controller
 @RequestMapping("/admin")
@@ -29,7 +26,6 @@ public class AdminDashboardController {
     
     /**
      * Construtor com injeção de dependência
-     * Seguindo o princípio da Inversão de Dependência (DIP)
      */
     @Autowired
     public AdminDashboardController(DashboardService dashboardService) {

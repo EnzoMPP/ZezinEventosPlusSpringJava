@@ -13,9 +13,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Controller especializado para inscrições do cliente.
- * 
- * Este controller segue o Princípio da Responsabilidade Única (SRP)
- * ao focar exclusivamente no gerenciamento de inscrições do cliente.
  */
 @Controller
 @RequestMapping("/cliente")

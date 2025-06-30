@@ -6,9 +6,7 @@ import java.util.List;
 /**
  * Data Transfer Object para dados do Dashboard Administrativo
  * 
- * Encapsula todas as estatísticas e dados necessários para o dashboard,
- * seguindo o princípio da responsabilidade única e evitando exposição
- * direta das entidades de domínio.
+ * Encapsula todas as estatísticas e dados necessários para o dashboard
  */
 public class DashboardDTO {
     

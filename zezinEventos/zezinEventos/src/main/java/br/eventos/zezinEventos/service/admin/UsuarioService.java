@@ -18,8 +18,6 @@ import java.util.List;
 
 /**
  * Service para gerenciamento de usuários administrativos
- * Implementa princípios SOLID: SRP, OCP, DIP
- * Organizado na estrutura admin/ para melhor navegabilidade
  */
 @Service
 public class UsuarioService implements UsuarioServiceInterface {

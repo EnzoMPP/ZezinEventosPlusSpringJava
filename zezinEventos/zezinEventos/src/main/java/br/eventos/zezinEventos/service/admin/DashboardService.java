@@ -22,9 +22,6 @@ import java.util.List;
  * - Compilar estatísticas do sistema
  * - Gerar alertas importantes
  * - Verificar saúde do sistema
- * 
- * Seguindo o princípio da Responsabilidade Única (SRP)
- * Organizado na estrutura admin/ para melhor navegabilidade
  */
 @Service
 public class DashboardService implements DashboardServiceInterface {
@@ -36,7 +33,6 @@ public class DashboardService implements DashboardServiceInterface {
     private final InscricaoService inscricaoService;
       /**
      * Construtor com injeção de dependência
-     * Seguindo o princípio da Inversão de Dependência (DIP)
      */
     @Autowired
     public DashboardService(EventoService eventoService,

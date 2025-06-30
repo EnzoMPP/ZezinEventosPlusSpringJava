@@ -16,9 +16,6 @@ import java.util.List;
 
 /**
  * Implementação do serviço para inscrições do cliente.
- * 
- * Esta classe segue o Princípio da Responsabilidade Única (SRP) ao focar
- * exclusivamente nas operações de inscrição do cliente.
  */
 @Service
 public class ClienteInscricaoService implements ClienteInscricaoServiceInterface {

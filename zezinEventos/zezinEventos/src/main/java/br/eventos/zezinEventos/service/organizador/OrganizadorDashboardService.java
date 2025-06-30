@@ -15,7 +15,6 @@ import java.util.List;
 /**
  * Implementação do serviço para dashboard do organizador.
  * 
- * Esta classe segue o Princípio da Responsabilidade Única (SRP) ao focar
  * exclusivamente nas operações de dashboard do organizador.
  */
 @Service

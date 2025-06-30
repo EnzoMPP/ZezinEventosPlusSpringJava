@@ -13,12 +13,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Controller especializado para gerenciamento de perfil do administrador.
- * 
- * Este controller segue o Princípio da Responsabilidade Única (SRP)
- * ao focar exclusivamente nas operações de perfil administrativo.
- * 
- * Também aplica o Princípio da Inversão de Dependência (DIP) ao depender
- * da interface PerfilServiceInterface ao invés da implementação concreta.
  */
 @Controller
 @RequestMapping("/admin/perfil")
@@ -94,8 +88,8 @@ public class AdminPerfilController {
      * Endpoint para validação AJAX de disponibilidade de login.
      * 
      * @param login Login a ser validado
-     * @param authentication Dados de autenticação
-     * @return Resposta JSON com disponibilidade
+     * @param authentication
+     * @return 
      */
     @GetMapping("/validar-login")
     @ResponseBody

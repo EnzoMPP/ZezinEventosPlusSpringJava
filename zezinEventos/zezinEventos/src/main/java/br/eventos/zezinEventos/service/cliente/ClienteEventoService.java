@@ -15,9 +15,6 @@ import java.util.List;
 
 /**
  * Implementação do serviço para eventos do cliente.
- * 
- * Esta classe segue o Princípio da Responsabilidade Única (SRP) ao focar
- * exclusivamente nas operações de visualização de eventos para o cliente.
  */
 @Service
 public class ClienteEventoService implements ClienteEventoServiceInterface {

@@ -2,7 +2,6 @@ package br.eventos.zezinEventos.model.dto.admin;
 
 /**
  * DTO para transportar dados de usuários do sistema
- * Seguindo o princípio da Responsabilidade Única (SRP)
  */
 public class UsuarioDTO {
     private Long id;

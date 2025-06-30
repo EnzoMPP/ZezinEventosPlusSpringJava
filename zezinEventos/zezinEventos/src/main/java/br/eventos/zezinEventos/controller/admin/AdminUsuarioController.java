@@ -15,8 +15,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Controller responsável pelo gerenciamento de usuários administrativos
- * Seguindo o Princípio da Responsabilidade Única (SRP)
- * Usa injeção de dependência (DIP) para desacoplamento
  */
 @Controller
 @RequestMapping("/admin/usuarios")

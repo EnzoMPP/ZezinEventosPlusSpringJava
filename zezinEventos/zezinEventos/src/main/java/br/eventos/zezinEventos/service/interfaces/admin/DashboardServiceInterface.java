@@ -5,10 +5,6 @@ import br.eventos.zezinEventos.model.dto.admin.DashboardDTO;
 /**
  * Interface para o serviço de Dashboard Administrativo
  * Responsável por fornecer dados estatísticos e indicadores do sistema
- * 
- * Seguindo o princípio da Responsabilidade Única (SRP)
- * Seguindo o princípio da Inversão de Dependência (DIP)
- * Organizada na estrutura admin/ para melhor navegabilidade
  */
 public interface DashboardServiceInterface {
     

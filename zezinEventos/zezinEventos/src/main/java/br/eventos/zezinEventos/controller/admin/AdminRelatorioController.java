@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Controller responsável pelos relatórios administrativos
- * Seguindo o Princípio da Responsabilidade Única (SRP)
- * Usa injeção de dependência (DIP) para desacoplamento
  */
 @Controller
 @RequestMapping("/admin/relatorios")

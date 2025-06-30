@@ -5,8 +5,6 @@ import br.eventos.zezinEventos.model.dto.admin.EventosListaDTO;
 
 /**
  * Interface para service de gerenciamento de eventos administrativos
- * Seguindo o Princípio da Inversão de Dependência (DIP)
- * Organizada na estrutura admin/ para melhor navegabilidade
  */
 public interface EventoServiceInterface {
     

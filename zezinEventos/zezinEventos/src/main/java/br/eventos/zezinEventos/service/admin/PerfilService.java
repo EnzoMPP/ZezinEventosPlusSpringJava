@@ -10,13 +10,6 @@ import org.springframework.stereotype.Service;
 
 /**
  * Implementação do serviço para gerenciamento de perfil do administrador.
- * 
- * Esta classe segue o Princípio da Responsabilidade Única (SRP) ao focar
- * exclusivamente nas operações de perfil do administrador, delegando
- * operações básicas de CRUD para o AdministradorService.
- * 
- * Também aplica o Princípio da Inversão de Dependência (DIP) ao depender
- * de abstrações (interfaces) ao invés de implementações concretas.
  */
 @Service
 public class PerfilService implements PerfilServiceInterface {

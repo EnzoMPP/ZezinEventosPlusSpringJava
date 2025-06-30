@@ -13,9 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * Controller especializado para eventos do cliente.
- * 
- * Este controller segue o Princípio da Responsabilidade Única (SRP)
- * ao focar exclusivamente na visualização de eventos disponíveis para o cliente.
  */
 @Controller
 @RequestMapping("/cliente/eventos")

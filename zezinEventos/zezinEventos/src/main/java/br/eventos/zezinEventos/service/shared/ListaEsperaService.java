@@ -13,9 +13,6 @@ import java.util.Optional;
 
 /**
  * Service para gerenciamento da lista de espera automática.
- * 
- * Implementa a lógica FIFO (First In, First Out) para garantir que
- * quando uma vaga é liberada, o próximo cliente da fila seja automaticamente
  * promovido para participante efetivo do evento.
  */
 @Service

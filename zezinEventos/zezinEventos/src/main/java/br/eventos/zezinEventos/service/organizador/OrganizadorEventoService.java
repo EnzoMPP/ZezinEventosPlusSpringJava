@@ -14,9 +14,6 @@ import java.util.List;
 
 /**
  * Implementação do serviço para gerenciamento de eventos do organizador.
- * 
- * Esta classe segue o Princípio da Responsabilidade Única (SRP) ao focar
- * exclusivamente nas operações de eventos do organizador.
  */
 @Service
 public class OrganizadorEventoService implements OrganizadorEventoServiceInterface {

@@ -18,9 +18,6 @@ import java.util.Map;
 
 /**
  * Implementação do serviço para relatórios do organizador.
- * 
- * Esta classe segue o Princípio da Responsabilidade Única (SRP) ao focar
- * exclusivamente na geração de relatórios do organizador.
  */
 @Service
 public class OrganizadorRelatorioService implements OrganizadorRelatorioServiceInterface {

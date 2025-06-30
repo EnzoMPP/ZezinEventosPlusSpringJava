@@ -12,8 +12,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Controller responsável pelo gerenciamento administrativo de eventos
- * Seguindo o Princípio da Responsabilidade Única (SRP)
- * Usa injeção de dependência (DIP) para desacoplamento
  */
 @Controller
 @RequestMapping("/admin/eventos")

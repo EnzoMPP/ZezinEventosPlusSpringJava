@@ -4,10 +4,6 @@ import br.eventos.zezinEventos.model.dto.admin.PerfilDTO;
 
 /**
  * Interface para serviços relacionados ao gerenciamento de perfil do administrador.
- * Define operações específicas para visualização e atualização do perfil administrativo.
- * 
- * Esta interface segue o Princípio da Responsabilidade Única (SRP) ao focar 
- * exclusivamente nas operações de perfil do administrador.
  */
 public interface PerfilServiceInterface {
     

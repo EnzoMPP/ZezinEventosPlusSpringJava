@@ -4,8 +4,6 @@ import br.eventos.zezinEventos.model.dto.admin.RelatorioCompletoDTO;
 
 /**
  * Interface para service de relatórios administrativos
- * Seguindo o Princípio da Inversão de Dependência (DIP)
- * Organizada na estrutura admin/ para melhor navegabilidade
  */
 public interface RelatorioServiceInterface {
     

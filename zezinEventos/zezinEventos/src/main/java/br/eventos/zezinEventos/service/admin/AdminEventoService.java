@@ -12,8 +12,7 @@ import java.util.List;
 
 /**
  * Service para gerenciamento administrativo de eventos
- * Implementa princípios SOLID: SRP, OCP, DIP
- * Organizado na estrutura admin/ para melhor navegabilidade
+
  */
 @Service
 public class AdminEventoService implements EventoServiceInterface {

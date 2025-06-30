@@ -13,9 +13,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Controller especializado para gerenciamento de perfil do cliente.
- * 
- * Este controller segue o Princípio da Responsabilidade Única (SRP)
- * ao focar exclusivamente nas operações de perfil do cliente.
  */
 @Controller
 @RequestMapping("/cliente/perfil")
