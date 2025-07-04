@@ -249,6 +249,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // Auto-hide de alertas
     autoHideAlerts();
 
+    // Verificar status de inscrições se estivermos na página de eventos
+    if (document.querySelector('.inscricao-status')) {
+        verificarStatusInscricoes();
+    }
+
     // Aplicar máscaras
     const telefoneFields = document.querySelectorAll('#telefone, input[name="telefone"]');
     telefoneFields.forEach(field => aplicarMascaraTelefone(field));
@@ -316,6 +321,235 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
         });
+    }
+
+    // Verificar status de inscrições se estivermos na página de eventos
+    if (document.querySelector('.inscricao-status')) {
+        verificarStatusInscricoes();
+    }
+});
+
+// ===== CONTROLE DE STATUS DE INSCRIÇÕES =====
+
+// Função para verificar e atualizar o status de inscrição de todos os eventos
+function verificarStatusInscricoes() {
+    const statusContainers = document.querySelectorAll('.inscricao-status');
+    
+    statusContainers.forEach(container => {
+        const eventoId = container.getAttribute('data-evento-id');
+        if (eventoId) {
+            // Mostrar loading
+            mostrarLoading(container);
+            
+            // Verificar status de inscrição
+            verificarStatusEvento(eventoId, container);
+        }
+    });
+}
+
+// Mostrar estado de loading
+function mostrarLoading(container) {
+    // Esconder todos os status
+    esconderTodosStatus(container);
+    
+    // Mostrar loading
+    const loadingDiv = container.querySelector('.loading-status');
+    if (loadingDiv) {
+        loadingDiv.classList.remove('d-none');
+    }
+}
+
+// Esconder todos os estados de status
+function esconderTodosStatus(container) {
+    const statusDivs = container.querySelectorAll('div[class*="d-none"]');
+    statusDivs.forEach(div => {
+        div.classList.add('d-none');
+    });
+}
+
+// Verificar status de um evento específico
+async function verificarStatusEvento(eventoId, container) {
+    try {
+        // Verificar se pode se inscrever
+        const podeInscrever = await fetch(`/cliente/pode-inscrever/${eventoId}`)
+            .then(response => response.json());
+        
+        // Verificar se está na lista de espera
+        const estaListaEspera = await fetch(`/cliente/esta-na-lista-espera/${eventoId}`)
+            .then(response => response.json());
+        
+        // Esconder loading
+        const loadingDiv = container.querySelector('.loading-status');
+        if (loadingDiv) {
+            loadingDiv.classList.add('d-none');
+        }
+        
+        if (estaListaEspera) {
+            // Mostrar status de lista de espera
+            mostrarStatusListaEspera(container, eventoId);
+        } else if (podeInscrever) {
+            // Verificar se evento tem vagas ou está lotado
+            verificarVagasEvento(container, eventoId);
+        } else {
+            // Não pode se inscrever (já inscrito ou outros motivos)
+            mostrarStatusNaoPodeInscrever(container);
+        }
+        
+    } catch (error) {
+        console.error('Erro ao verificar status:', error);
+        // Em caso de erro, mostrar botão padrão
+        mostrarStatusPodeInscrever(container);
+    }
+}
+
+// Verificar se evento tem vagas
+function verificarVagasEvento(container, eventoId) {
+    // Pegar informações de vagas do próprio card
+    const card = container.closest('.card');
+    const vagasTexto = card.querySelector('.progress').parentElement.querySelector('.small:last-child').textContent;
+    const [ocupadas, totais] = vagasTexto.split('/').map(v => parseInt(v.trim()));
+    
+    if (ocupadas >= totais) {
+        // Evento lotado - mostrar opção de lista de espera
+        mostrarStatusEventoLotado(container);
+    } else {
+        // Pode se inscrever normalmente
+        mostrarStatusPodeInscrever(container);
+    }
+}
+
+// Mostrar status: pode se inscrever
+function mostrarStatusPodeInscrever(container) {
+    esconderTodosStatus(container);
+    const div = container.querySelector('.pode-inscrever');
+    if (div) {
+        div.classList.remove('d-none');
+    }
+}
+
+// Mostrar status: evento lotado
+function mostrarStatusEventoLotado(container) {
+    esconderTodosStatus(container);
+    const div = container.querySelector('.evento-lotado');
+    if (div) {
+        div.classList.remove('d-none');
+    }
+}
+
+// Mostrar status: na lista de espera
+async function mostrarStatusListaEspera(container, eventoId) {
+    esconderTodosStatus(container);
+    const div = container.querySelector('.na-lista-espera');
+    if (div) {
+        div.classList.remove('d-none');
+        
+        // Buscar posição na fila
+        try {
+            const posicao = await fetch(`/cliente/posicao-lista-espera/${eventoId}`)
+                .then(response => response.json());
+            
+            const posicaoSpan = div.querySelector('.posicao-fila');
+            if (posicaoSpan && posicao > 0) {
+                posicaoSpan.textContent = posicao;
+            }
+        } catch (error) {
+            console.error('Erro ao buscar posição na fila:', error);
+        }
+    }
+}
+
+// Mostrar status: não pode se inscrever
+function mostrarStatusNaoPodeInscrever(container) {
+    esconderTodosStatus(container);
+    const div = container.querySelector('.nao-pode-inscrever');
+    if (div) {
+        div.classList.remove('d-none');
+    }
+}
+
+// ===== INICIALIZAÇÃO =====
+
+// Executar quando a página carrega
+document.addEventListener('DOMContentLoaded', function() {
+    // Atualizar hora (se elemento existir)
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    // Auto-hide de alertas
+    autoHideAlerts();
+
+    // Aplicar máscaras
+    const telefoneFields = document.querySelectorAll('#telefone, input[name="telefone"]');
+    telefoneFields.forEach(field => aplicarMascaraTelefone(field));
+
+    const cpfFields = document.querySelectorAll('#cpf, input[name="cpf"]');
+    cpfFields.forEach(field => aplicarMascaraCPF(field));
+
+    const cnpjFields = document.querySelectorAll('#cnpj, input[name="cnpj"]');
+    cnpjFields.forEach(field => aplicarMascaraCNPJ(field));
+
+    // Validações
+    validarSenhasCoincidentes();
+    validarLogin();
+    validarDataEvento();
+    validarVagas();
+    validarPreco();
+
+    // Alternar campos de cadastro
+    alternarCamposCadastro();
+
+    // Animar barras de progresso
+    animarBarrasProgresso();
+
+    // Auto-focus em campos de busca
+    const buscaField = document.getElementById('busca');
+    if (buscaField) {
+        buscaField.focus();
+    }
+
+    // Configurar toggle de senha (múltiplos campos)
+    const togglePasswordBtn = document.getElementById('togglePassword');
+    if (togglePasswordBtn) {
+        togglePasswordBtn.addEventListener('click', () => togglePassword());
+    }
+
+    // Configurar confirmações de exclusão
+    document.querySelectorAll('form[onsubmit*="confirm"]').forEach(form => {
+        form.addEventListener('submit', function (e) {
+            const isDelete = this.action.includes('/excluir/') || this.action.includes('/desativar/');
+
+            if (isDelete) {
+                const tipo = this.action.includes('/usuarios/') ? 'usuário' : 'item';
+                if (!confirmarExclusao(tipo)) {
+                    e.preventDefault();
+                }
+            }
+        });
+    });
+
+    // Validação de formulário de edição de usuário
+    const formEdicao = document.querySelector('form[action*="/editar/"]');
+    if (formEdicao) {
+        formEdicao.addEventListener('submit', function (e) {
+            const senhaField = document.getElementById('senha');
+            const confirmarSenhaField = document.getElementById('confirmarSenha') || document.getElementById('confirmSenha');
+
+            if (senhaField && confirmarSenhaField) {
+                const senha = senhaField.value;
+                const confirmarSenha = confirmarSenhaField.value;
+
+                if (senha && (!confirmarSenha || senha !== confirmarSenha)) {
+                    e.preventDefault();
+                    alert('Por favor, confirme a nova senha corretamente.');
+                    confirmarSenhaField.focus();
+                }
+            }
+        });
+    }
+
+    // Verificar status de inscrições se estivermos na página de eventos
+    if (document.querySelector('.inscricao-status')) {
+        verificarStatusInscricoes();
     }
 });
 
