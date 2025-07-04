@@ -84,32 +84,4 @@ public class ListaEsperaController {
             return List.of();
         }
     }
-      /**
-     * Promove manualmente o próximo da fila (apenas para admin).
-     * 
-     * @param eventoId ID do evento
-     * @return Redirecionamento
-     */
-    @PostMapping("/evento/{eventoId}/promover-proximo")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String promoverProximo(@PathVariable Long eventoId) {
-        try {
-            Evento evento = eventoService.buscarPorId(eventoId);
-            if (evento != null) {
-                Cliente proximoCliente = listaEsperaService.promoverProximoDaFila(evento);
-                if (proximoCliente != null) {
-                    // Realizar a inscrição manualmente
-                    inscricaoService.inscrever(proximoCliente, evento);
-                    return "redirect:/lista-espera/evento/" + eventoId + "?sucesso=ClientePromovido";
-                } else {
-                    return "redirect:/lista-espera/evento/" + eventoId + "?erro=FilaVazia";
-                }
-            }
-            
-            return "redirect:/lista-espera/evento/" + eventoId + "?erro=EventoNaoEncontrado";
-            
-        } catch (Exception e) {
-            return "redirect:/lista-espera/evento/" + eventoId + "?erro=ErroAoPromover";
-        }
-    }
 }
